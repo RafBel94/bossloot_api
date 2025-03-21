@@ -13,11 +13,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory(8)->create(
+        User::factory(30)->create(
             [
                 'role' => 'user',
-                'email_verified_at' => now(),
-                'email_confirmed' => false
             ]
         );
 
@@ -26,17 +24,27 @@ class DatabaseSeeder extends Seeder
                 'email' => 'user@user.com',
                 'password' => 'User123.',
                 'role' => 'user',
-                'email_verified_at' => now(),
-                'email_confirmed' => false
             ]
         );
         
         User::factory()->create([
-            'name' => 'Admin Rafael',
+            'name' => 'Rafael',
             'email' => 'admin@admin.com',
             'password' => 'Admin123.',
-            'email_confirmed' => false,
             'role' => 'admin',
+            'email_confirmed' => true,
+            'activated' => true,
+            'email_verified_at' => now()
+        ]);
+
+        User::factory()->create([
+            'name' => 'Rafael',
+            'email' => 'rafael@gmail.com',
+            'password' => 'Rafael123.',
+            'role' => 'user',
+            'email_confirmed' => true,
+            'activated' => true,
+            'email_verified_at' => now()
         ]);
 
         // Products

@@ -19,9 +19,13 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'role' => $this->role,
-            'email_verified_at' => $this->email_verified_at,
-            'actived' => $this->actived,
-            'deleted' => $this->deleted,
+            'adress_1' => $this->adress_1,
+            'adress_2' => $this->adress_2,
+            'mobile_phone' => $this->mobile_phone,
+            'level' => $this->level,
+            'points' => $this->points,
+            'email_confirmed' => $this->email_confirmed,
+            'activated' => $this->activated,
             'profile_picture' => $this->profile_picture,
         ];
     }
