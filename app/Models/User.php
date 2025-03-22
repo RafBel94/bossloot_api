@@ -70,15 +70,8 @@ class User extends Authenticatable
     }
 
     // Get user verification URL
-    protected function verificationUrl()
+    public function sendEmailVerificationNotification()
     {
-        return URL::temporarySignedRoute(
-            'verification.verify',
-            Carbon::now()->addMinutes(config('auth.verification.expire', 60)),
-            [
-                'id' => $this->getKey(),
-                'hash' => sha1($this->getEmailForVerification()),
-            ]
-        );
+        $this->notify(new \App\Notifications\VerifyEmail);
     }
 }
