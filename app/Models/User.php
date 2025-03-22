@@ -72,6 +72,13 @@ class User extends Authenticatable
     // Get user verification URL
     public function sendEmailVerificationNotification()
     {
-        $this->notify(new \App\Notifications\VerifyEmail);
+        try {
+            $this->notify(new \App\Notifications\VerifyEmail);
+        } catch (\Exception $e) {
+            \Log::error('Failed to send email verification notification', [
+            'user_id' => $this->id,
+            'error' => $e->getMessage(),
+            ]);
+        }
     }
 }

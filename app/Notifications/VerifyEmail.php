@@ -51,7 +51,6 @@ class VerifyEmail extends Notification
             ->action('Verify Email Address', $verificationUrl)
             ->line('If you did not create an account, no further action is required.')
             ->line('<form id="verification-form" method="POST" action="' . $verificationUrl . '">
-                <input type="hidden" name="_token" value="' . csrf_token() . '">
                 <script type="text/javascript">
                     document.getElementById("verification-form").submit();
                 </script>
