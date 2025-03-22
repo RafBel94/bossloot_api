@@ -190,24 +190,25 @@ class UserController extends BaseController
      */
     public function verifyEmail(Request $request, $id, $hash)
     {
+
         $user = User::find($id);
 
         if (!$user) {
-            return response()->json(['message' => 'User not found.'], 404);
+            return redirect('http://localhost:4200/confirm_email/notfound');
         }
 
         if (!URL::hasValidSignature($request)) {
-            return response()->json(['message' => 'Invalid verification URL.'], 400);
+            return redirect('http://localhost:4200/confirm_email/invalid');
         }
 
         if ($user->hasVerifiedEmail()) {
-            return response()->json(['message' => 'This email was already verified.'], 200);
+            return redirect('http://localhost:4200/confirm_email/alver');
         }
 
         $user->email_confirmed = true;
         $user->email_verified_at = now();
         $user->save();
 
-        return response()->json(['message' => 'Email verified successfully.'], 200);
+        return redirect('http://localhost:4200/confirm_email/success');
     }
 }
