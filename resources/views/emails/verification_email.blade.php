@@ -51,7 +51,7 @@
             <h4>Please click the button below to verify your email address.</h4>
             <a href="{{ $verificationUrl }}" class="button">Verify Email Address</a>
             <p>If you did not create an account, no further action is required.</p>
-            <p>Thanks,<br>Eventify Team</p>
+            <p>Thanks,<br>BossLoot Team</p>
         </div>
     </div>
 </body>

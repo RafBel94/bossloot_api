@@ -78,6 +78,11 @@ class User extends Authenticatable
             'verification.verify', now()->addMinutes(60), ['id' => $this->id, 'hash' => sha1($this->email)]
         );
 
-        Mail::to($this->email)->send(new CustomVerifyEmail($verificationUrl, $this));
+        try {
+            Mail::to($this->email)->send(new CustomVerifyEmail($verificationUrl, $this));
+            logger()->info('Verification email sent to user ID ' . $this->id);
+        } catch (\Exception $e) {
+            logger().info('Failed to send verification email to user ID ' . $this->id . ': ' . $e->getMessage());
+        }
     }
 }
