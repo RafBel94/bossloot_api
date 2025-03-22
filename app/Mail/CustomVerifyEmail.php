@@ -48,6 +48,7 @@ class CustomVerifyEmail extends Mailable
     public function build()
     {
         return $this->view('emails.verification_email')
+                    ->from('verify@bossloot.com', 'BossLoot')
                     ->with([
                         'verificationUrl' => $this->verificationUrl,
                         'user' => $this->user,
