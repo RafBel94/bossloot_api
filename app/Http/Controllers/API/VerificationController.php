@@ -58,7 +58,7 @@ class VerificationController extends BaseController
     /**
      * Resend the email verification notification.
      */
-    public function resendEmailVerificationNotification(Request $request)
+    public function resendEmailVerification(Request $request)
     {
         $email = $request->email;
         $user = User::where('email', $email)->first();

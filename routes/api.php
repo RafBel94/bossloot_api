@@ -13,7 +13,7 @@ Route::post('login', [UserController::class, 'login']);
 // Verification routes
 Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verifyEmail'])->name('verification.verify');
 Route::post('/check-verification', [VerificationController::class, 'checkEmailVerified'])->name('verification.check');
-Route::post('/resend-verification', [VerificationController::class, 'resendVerification'])->name('verification.resend');
+Route::post('/resend-verification', [VerificationController::class, 'resendEmailVerification'])->name('verification.resend');
 
 // Product routes
 Route::resource('products', ProductController::class)->only(['index', 'show']);
