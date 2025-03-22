@@ -49,12 +49,7 @@ class VerifyEmail extends Notification
             ->subject('Verify Email Address')
             ->line('Please click the button below to verify your email address.')
             ->action('Verify Email Address', $verificationUrl)
-            ->line('If you did not create an account, no further action is required.')
-            ->line('<form id="verification-form" method="POST" action="' . $verificationUrl . '">
-                <script type="text/javascript">
-                    document.getElementById("verification-form").submit();
-                </script>
-            </form>');
+            ->line('If you did not create an account, no further action is required.');
     }
 
     /**
