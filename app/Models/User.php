@@ -8,7 +8,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
+use App\Mail\CustomVerifyEmail;
 
 class User extends Authenticatable
 {
@@ -72,13 +74,10 @@ class User extends Authenticatable
     // Get user verification URL
     public function sendEmailVerificationNotification()
     {
-        try {
-            $this->notify(new \App\Notifications\VerifyEmail);
-        } catch (\Exception $e) {
-            \Log::error('Failed to send email verification notification', [
-            'user_id' => $this->id,
-            'error' => $e->getMessage(),
-            ]);
-        }
+        $verificationUrl = URL::temporarySignedRoute(
+            'verification.verify', now()->addMinutes(60), ['id' => $this->id, 'hash' => sha1($this->email)]
+        );
+
+        Mail::to($this->email)->send(new CustomVerifyEmail($verificationUrl, $this));
     }
 }
