@@ -73,6 +73,6 @@ class VerificationController extends BaseController
             return $this->sendError('Email verification error: ' . $e->getMessage());
         }
 
-        return $this->sendResponse([], 'Email verification sent.');
+        return $this->sendResponse(['email_sent' => true], 'Email verification sent.');
     }
 }
