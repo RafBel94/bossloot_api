@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\API\Controllers\VerificationController;
+use App\Http\Controllers\API\VerificationController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ProductController;
