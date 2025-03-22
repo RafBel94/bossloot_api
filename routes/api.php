@@ -8,6 +8,7 @@ use App\Http\Controllers\API\ProductController;
 Route::resource('users', UserController::class)->except(['store'])->middleware(['auth:sanctum', 'role:admin']);
 Route::post('register', [UserController::class, 'store']);
 Route::post('login', [UserController::class, 'login']);
+Route::post('/email/verify/{id}/{hash}', [UserController::class, 'verifyEmail'])->name('verification.verify');
 
 // Product routes
 Route::resource('products', ProductController::class)->only(['index', 'show']);

@@ -6,6 +6,8 @@ use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
 
 
 class UserController extends BaseController
@@ -49,7 +51,14 @@ class UserController extends BaseController
         $data['id'] = $user->id;
         $data['email'] = $user->email;
 
-        return $this->sendResponse($data, 'User register successfully.');
+        // Send email confirmation
+        try {
+            $user->sendEmailVerificationNotification();
+        } catch (\Exception $e) {
+            Log::error('Email verification error: ' . $e->getMessage());
+        }
+
+        return $this->sendResponse($data, 'User register successfully. Please confirm your email.');
     }
 
     /**
@@ -71,6 +80,11 @@ class UserController extends BaseController
             $user = auth()->user();
             $token = $user->createToken('BossLoot')->plainTextToken;
 
+            if ($user->activated == 0) {
+                return $this->sendError('Unauthorized.', ['error' => 'User not activated. Please contact an admin.']);
+            } else if ($user->email_confirmed == 0) {
+                return $this->sendError('Unauthorized.', ['error' => 'Please confirm your email before logging in.']);
+            }
 
             $data['id'] = $user->id;
             $data['name'] = $user->name;
@@ -87,8 +101,6 @@ class UserController extends BaseController
             $data['token'] = $token;
 
             return $this->sendResponse($data, 'User login successfully.');
-
-
 
         } else {
             return $this->sendError('Unauthorized.', ['error' => 'Invalid credentials.']);
@@ -171,5 +183,30 @@ class UserController extends BaseController
         $user->delete();
 
         return $this->sendResponse([], 'User deleted successfully.');
+    }
+
+    /**
+     * Verify the user's email.
+     */
+    public function verifyEmail(Request $request, $id, $hash)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+
+        if (!URL::hasValidSignature($request)) {
+            return response()->json(['message' => 'Invalid verification URL.'], 400);
+        }
+
+        if ($user->hasVerifiedEmail()) {
+            return response()->json(['message' => 'This email was already verified.'], 200);
+        }
+
+        $user->email_confirmed = true;
+        $user->save();
+
+        return response()->json(['message' => 'Email verified successfully.'], 200);
     }
 }
