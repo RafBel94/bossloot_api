@@ -8,6 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Mail;
 
 class VerifyEmail extends Notification
 {
@@ -35,22 +36,26 @@ class VerifyEmail extends Notification
      * Get the mail representation of the notification.
      */
     public function toMail($notifiable)
-    {
-        $verificationUrl = URL::temporarySignedRoute(
-            'verification.verify',
-            Carbon::now()->addMinutes(config('auth.verification.expire', 60)),
-            [
-                'id' => $notifiable->getKey(),
-                'hash' => sha1($notifiable->getEmailForVerification()),
-            ]
-        );
+{
+    $email = $notifiable->getEmailForVerification();
+    $verificationUrl = URL::temporarySignedRoute(
+        'verification.verify',
+        Carbon::now()->addMinutes(config('auth.verification.expire', 60)),
+        [
+            'id' => $notifiable->getKey(),
+            'hash' => sha1($email),
+        ]
+    );
 
-        return (new MailMessage)
-            ->subject('Verify Email Address')
-            ->line('Please click the button below to verify your email address.')
-            ->action('Verify Email Address', $verificationUrl)
-            ->line('If you did not create an account, no further action is required.');
-    }
+    $data = [
+        'verificationUrl' => $verificationUrl,
+    ];
+
+    return Mail::send('emails.verification_email', $data, function ($message) use ($email) {
+        $message->subject('Verify Email Address');
+        $message->to($email);
+    });
+}
 
     /**
      * Get the array representation of the notification.

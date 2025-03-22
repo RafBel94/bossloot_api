@@ -205,6 +205,7 @@ class UserController extends BaseController
         }
 
         $user->email_confirmed = true;
+        $user->email_verified_at = now();
         $user->save();
 
         return response()->json(['message' => 'Email verified successfully.'], 200);
