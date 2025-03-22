@@ -184,31 +184,4 @@ class UserController extends BaseController
 
         return $this->sendResponse([], 'User deleted successfully.');
     }
-
-    /**
-     * Verify the user's email.
-     */
-    public function verifyEmail(Request $request, $id, $hash)
-    {
-
-        $user = User::find($id);
-
-        if (!$user) {
-            return redirect('http://localhost:4200/confirm_email/notfound');
-        }
-
-        if (!URL::hasValidSignature($request)) {
-            return redirect('http://localhost:4200/confirm_email/invalid');
-        }
-
-        if ($user->hasVerifiedEmail()) {
-            return redirect('http://localhost:4200/confirm_email/alver');
-        }
-
-        $user->email_confirmed = true;
-        $user->email_verified_at = now();
-        $user->save();
-
-        return redirect('http://localhost:4200/confirm_email/success');
-    }
 }

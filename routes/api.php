@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\API\Controllers\VerificationController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ProductController;
@@ -8,7 +9,11 @@ use App\Http\Controllers\API\ProductController;
 Route::resource('users', UserController::class)->except(['store'])->middleware(['auth:sanctum', 'role:admin']);
 Route::post('register', [UserController::class, 'store']);
 Route::post('login', [UserController::class, 'login']);
-Route::get('/email/verify/{id}/{hash}', [UserController::class, 'verifyEmail'])->name('verification.verify');
+
+// Verification routes
+Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verifyEmail'])->name('verification.verify');
+Route::post('/check-verification', [VerificationController::class, 'checkEmailVerified'])->name('verification.check');
+Route::post('/resend-verification', [VerificationController::class, 'resendVerification'])->name('verification.resend');
 
 // Product routes
 Route::resource('products', ProductController::class)->only(['index', 'show']);
