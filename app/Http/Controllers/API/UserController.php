@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use App\Utils\CloudinaryImageClient;
+use App\Http\Requests\UpdateUserRequest;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 
@@ -133,67 +135,33 @@ class UserController extends BaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $user = User::findOrFail($id);
+        DB::transaction(function () use ($request, $user) {
+            if ($request->hasFile('profile_picture')) {
+                $this->deleteOldProfilePicture($user->profile_picture);
 
-        // Set default values for optional fields
-        $defaults = [
-            'mobile_phone' => null,
-            'adress_1' => null,
-            'adress_2' => null,
-            'profile_picture' => null
-        ];
+                $user->profile_picture = Cloudinary::upload(
+                    $request->file('profile_picture')->getRealPath(),
+                    [
+                        'folder' => 'bossloot/user-images',
+                    ]
+                )->getSecurePath();
+            }
 
-        // Merge with received data
-        $input = array_merge($defaults, $request->all());
-
-        // Convert '1'/'0' strings to booleans
-        $input['email_confirmed'] = $input['email_confirmed'] == '1' ? true : false;
-        $input['activated'] = $input['activated'] == '1' ? true : false;
-
-        $validator = Validator::make($input, [
-            'name' => 'required|max:80',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'mobile_phone' => 'nullable|regex:/^[0-9]{9}$/',
-            'adress_1' => 'nullable|max:255',
-            'adress_2' => 'nullable|max:255',
-            'level' => 'required|integer|min:1|max:3',
-            'points' => 'required|integer|min:0',
-            'email_confirmed' => 'required|boolean',
-            'activated' => 'required|boolean',
-            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
-
-        if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors());
-        }
-
-        // Handle profile picture
-        if ($request->hasFile('profile_picture')) {
-            // Delete old profile picture
-            $this->deleteOldProfilePicture($user->profile_picture);
-
-            // Upload new profile picture
-            $image = $request->file('profile_picture');
-            $uploadedFileUrl = Cloudinary::upload($image->getRealPath(), [
-                'folder' => 'bossloot/user-images',
-            ])->getSecurePath();
-            $user->profile_picture = $uploadedFileUrl;
-        }
-
-        // Update fields
-        $user->name = $input['name'];
-        $user->email = $input['email'];
-        $user->mobile_phone = $input['mobile_phone'];
-        $user->adress_1 = $input['adress_1'];
-        $user->adress_2 = $input['adress_2'];
-        $user->level = (int) $input['level'];
-        $user->points = (int) $input['points'];
-        $user->email_confirmed = (bool) $input['email_confirmed'];
-        $user->activated = (bool) $input['activated'];
-
-        $user->save();
+            // Update fields - Laravel automatically handles null values for fields not present
+            $user->fill([
+                'name' => $request->name,
+                'email' => $request->email,
+                'mobile_phone' => $request->mobile_phone,
+                'adress_1' => $request->adress_1,
+                'adress_2' => $request->adress_2,
+                'level' => (int) $request->level,
+                'points' => (int) $request->points,
+                'email_confirmed' => $request->email_confirmed,
+                'activated' => $request->activated,
+            ])->save();
+        });
 
         return $this->sendResponse(new UserResource($user), 'User updated successfully.');
     }
