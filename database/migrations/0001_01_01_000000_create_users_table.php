@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('role')->default('user');
             $table->integer('level')->default(1);
             $table->integer('points')->default(0);
-            $table->string('profile_picture')->default('images/avatar-placeholder.png');
+            $table->string('profile_picture')->default('https://res.cloudinary.com/dlmbw4who/image/upload/v1742850142/avatar-placeholder_qiq5pb.png');
             $table->boolean('activated')->default(true);
             $table->boolean('email_confirmed')->default(false);
             $table->rememberToken();
