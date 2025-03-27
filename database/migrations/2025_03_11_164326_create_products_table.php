@@ -17,9 +17,12 @@ return new class extends Migration
             $table->text('description');
             $table->string('category');
             $table->string('brand');
+            $table->string('model');
+            $table->boolean('on_sale')->default(false);
+            $table->boolean('featured')->default(false);
             $table->decimal('price', 8, 2);
             $table->integer('quantity');
-            $table->string('image')->default('images/default-product.png');
+            $table->string('image')->default('https://res.cloudinary.com/dlmbw4who/image/upload/v1743097241/product-placeholder_jcgqx4.png');
             $table->timestamps();
         });
     }
