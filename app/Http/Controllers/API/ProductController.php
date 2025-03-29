@@ -9,12 +9,28 @@ use App\Models\Product;
 
 class ProductController extends BaseController
 {
+
+    protected $productRelations = [
+        'ramSpec',
+        'gpuSpec',
+        'cpuSpec',
+        'motherboardSpec',
+        'storageSpec',
+        'psuSpec',
+        'caseSpec',
+        'coolerSpec',
+        'displaySpec',
+        'keyboardSpec',
+        'mouseSpec',
+    ];
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $products = Product::all();
+        $products = Product::with($this->productRelations)->get();
+
         return $this->sendResponse(ProductResource::collection($products), 'Products retrieved successfully.');
     }
 
@@ -31,6 +47,7 @@ class ProductController extends BaseController
      */
     public function store(Request $request)
     {
+        //TODO
         $product = $request->all();
 
         $validator = Validator::make($product, [
@@ -43,7 +60,7 @@ class ProductController extends BaseController
             'image' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
@@ -58,7 +75,7 @@ class ProductController extends BaseController
     {
         $product = Product::find($id);
 
-        if (is_null($product)) {
+        if ($product == null) {
             return $this->sendError('Product not found.');
         }
 
@@ -88,7 +105,7 @@ class ProductController extends BaseController
     {
         $product = Product::find($id);
 
-        if($product == null) {
+        if ($product == null) {
             return $this->sendError('Product not found.');
         }
 

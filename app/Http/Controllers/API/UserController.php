@@ -7,7 +7,10 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\DB;
+use App\Utils\CloudinaryImageClient;
+use App\Http\Requests\UpdateUserRequest;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 
 class UserController extends BaseController
@@ -132,41 +135,69 @@ class UserController extends BaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $user = User::find($id);
+        DB::transaction(function () use ($request, $user) {
+            if ($request->hasFile('profile_picture')) {
+                $this->deleteOldProfilePicture($user->profile_picture);
 
-        if ($user == null) {
-            return $this->sendError('User not found.');
-        }
+                $user->profile_picture = Cloudinary::upload(
+                    $request->file('profile_picture')->getRealPath(),
+                    [
+                        'folder' => 'bossloot/user-images',
+                    ]
+                )->getSecurePath();
+            }
 
-        $input = $request->all();
-        $validator = Validator::make($input, [
-            'name' => 'max:80',
-            'email' => 'email|unique:users,email,' . $id,
-            'mobile_phone' => 'nullable|regex:/^[0-9]{9}$/',
-            'adress_1' => 'nullable|max:255',
-            'adress_2' => 'nullable|max:255',
-            'level' => 'integer|min:1|max:3',
-            'points' => 'integer|min:0',
-        ]);
-
-        if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors());
-        }
-
-        $user->name = $input['name'];
-        $user->email = $input['email'];
-        $user->mobile_phone = $input['mobile_phone'];
-        $user->adress_1 = $input['adress_1'];
-        $user->adress_2 = $input['adress_2'];
-        $user->level = $input['level'];
-        $user->points = $input['points'];
-        $user->email_confirmed = $input['email_confirmed'];
-        $user->activated = $input['activated'];
-        $user->save();
+            // Update fields - Laravel automatically handles null values for fields not present
+            $user->fill([
+                'name' => $request->name,
+                'email' => $request->email,
+                'mobile_phone' => $request->mobile_phone,
+                'adress_1' => $request->adress_1,
+                'adress_2' => $request->adress_2,
+                'level' => (int) $request->level,
+                'points' => (int) $request->points,
+                'email_confirmed' => $request->email_confirmed,
+                'activated' => $request->activated,
+            ])->save();
+        });
 
         return $this->sendResponse(new UserResource($user), 'User updated successfully.');
+    }
+
+    /**
+     * Delete the old profile picture from Cloudinary.
+     */
+    protected function deleteOldProfilePicture(?string $url): void
+    {
+        // Dont delete the default image
+        $defaultImage = 'https://res.cloudinary.com/dlmbw4who/image/upload/v1742850142/avatar-placeholder_qiq5pb.png';
+
+        if (empty($url) || $url === $defaultImage) {
+            return;
+        }
+
+        try {
+            $publicId = $this->extractPublicIdFromUrl($url);
+
+            if ($publicId) {
+                Cloudinary::destroy($publicId);
+            }
+        } catch (\Exception $e) {
+            \Log::error("Error deleting old profile picture: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Extract public ID from Cloudinary URL.
+     */
+    protected function extractPublicIdFromUrl(string $url): ?string
+    {
+        $pattern = '/upload\/(?:v\d+\/)?([^\.]+)/';
+        preg_match($pattern, $url, $matches);
+
+        return $matches[1] ?? null;
     }
 
     /**
@@ -183,30 +214,5 @@ class UserController extends BaseController
         $user->delete();
 
         return $this->sendResponse([], 'User deleted successfully.');
-    }
-
-    /**
-     * Verify the user's email.
-     */
-    public function verifyEmail(Request $request, $id, $hash)
-    {
-        $user = User::find($id);
-
-        if (!$user) {
-            return response()->json(['message' => 'User not found.'], 404);
-        }
-
-        if (!URL::hasValidSignature($request)) {
-            return response()->json(['message' => 'Invalid verification URL.'], 400);
-        }
-
-        if ($user->hasVerifiedEmail()) {
-            return response()->json(['message' => 'This email was already verified.'], 200);
-        }
-
-        $user->email_confirmed = true;
-        $user->save();
-
-        return response()->json(['message' => 'Email verified successfully.'], 200);
     }
 }
