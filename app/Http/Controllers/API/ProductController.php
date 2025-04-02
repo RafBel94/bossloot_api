@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\SimpleProductResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\Product;
@@ -29,9 +30,9 @@ class ProductController extends BaseController
      */
     public function index()
     {
-        $products = Product::with($this->productRelations)->get();
+        $products = Product::all();
 
-        return $this->sendResponse(ProductResource::collection($products), 'Products retrieved successfully.');
+        return $this->sendResponse(SimpleProductResource::collection($products), 'Products retrieved successfully.');
     }
 
     /**

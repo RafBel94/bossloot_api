@@ -68,7 +68,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Corsair',
                 'price' => 89.99,
                 'quantity' => 50,
-                'on_sale' => true,
                 'featured' => true
             ],
             [
@@ -79,7 +78,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'G.Skill',
                 'price' => 109.99,
                 'quantity' => 40,
-                'on_sale' => false,
                 'featured' => true
             ],
             [
@@ -90,7 +88,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Kingston',
                 'price' => 79.99,
                 'quantity' => 60,
-                'on_sale' => true,
                 'featured' => false
             ],
             [
@@ -101,7 +98,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'TeamGroup',
                 'price' => 99.99,
                 'quantity' => 30,
-                'on_sale' => false,
                 'featured' => true
             ],
             [
@@ -112,7 +108,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Patriot',
                 'price' => 94.99,
                 'quantity' => 35,
-                'on_sale' => true,
                 'featured' => false
             ],
         ])->each(function ($product) {
@@ -135,7 +130,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'NVIDIA',
                 'price' => 329.99,
                 'quantity' => 20,
-                'on_sale' => false,
                 'featured' => true
             ],
             [
@@ -146,7 +140,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'AMD',
                 'price' => 479.99,
                 'quantity' => 15,
-                'on_sale' => true,
                 'featured' => true
             ],
             [
@@ -157,7 +150,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'NVIDIA',
                 'price' => 229.99,
                 'quantity' => 25,
-                'on_sale' => true,
                 'featured' => false
             ],
             [
@@ -168,7 +160,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'AMD',
                 'price' => 199.99,
                 'quantity' => 30,
-                'on_sale' => false,
                 'featured' => false
             ],
             [
@@ -179,7 +170,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'NVIDIA',
                 'price' => 699.99,
                 'quantity' => 10,
-                'on_sale' => false,
                 'featured' => true
             ],
         ])->each(function ($product) {
@@ -204,7 +194,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'AMD',
                 'price' => 199.99,
                 'quantity' => 30,
-                'on_sale' => true,
                 'featured' => true
             ],
             [
@@ -215,7 +204,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Intel',
                 'price' => 289.99,
                 'quantity' => 25,
-                'on_sale' => false,
                 'featured' => true
             ],
             [
@@ -226,7 +214,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'AMD',
                 'price' => 299.99,
                 'quantity' => 20,
-                'on_sale' => true,
                 'featured' => false
             ],
             [
@@ -237,7 +224,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Intel',
                 'price' => 409.99,
                 'quantity' => 15,
-                'on_sale' => false,
                 'featured' => true
             ],
             [
@@ -248,7 +234,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'AMD',
                 'price' => 499.99,
                 'quantity' => 10,
-                'on_sale' => false,
                 'featured' => true
             ],
         ])->each(function ($product) {
@@ -274,7 +259,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'ASUS',
                 'price' => 189.99,
                 'quantity' => 20,
-                'on_sale' => true,
                 'featured' => true
             ],
             [
@@ -285,7 +269,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'MSI',
                 'price' => 199.99,
                 'quantity' => 15,
-                'on_sale' => false,
                 'featured' => true
             ],
             [
@@ -296,7 +279,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Gigabyte',
                 'price' => 179.99,
                 'quantity' => 25,
-                'on_sale' => true,
                 'featured' => false
             ],
             [
@@ -307,7 +289,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'ASRock',
                 'price' => 109.99,
                 'quantity' => 30,
-                'on_sale' => false,
                 'featured' => false
             ],
             [
@@ -318,7 +299,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'EVGA',
                 'price' => 299.99,
                 'quantity' => 10,
-                'on_sale' => false,
                 'featured' => true
             ],
         ])->each(function ($product) {
@@ -352,7 +332,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Samsung',
                 'price' => 149.99,
                 'quantity' => 50,
-                'on_sale' => true,
                 'featured' => true
             ],
             [
@@ -363,7 +342,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Western Digital',
                 'price' => 99.99,
                 'quantity' => 40,
-                'on_sale' => false,
                 'featured' => true
             ],
             [
@@ -374,7 +352,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Seagate',
                 'price' => 59.99,
                 'quantity' => 60,
-                'on_sale' => true,
                 'featured' => false
             ],
             [
@@ -385,7 +362,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Crucial',
                 'price' => 59.99,
                 'quantity' => 30,
-                'on_sale' => false,
                 'featured' => true
             ],
             [
@@ -396,7 +372,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Kingston',
                 'price' => 89.99,
                 'quantity' => 35,
-                'on_sale' => true,
                 'featured' => false
             ],
         ])->each(function ($product) {
@@ -420,7 +395,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Corsair',
                 'price' => 139.99,
                 'quantity' => 20,
-                'on_sale' => true,
                 'featured' => true
             ],
             [
@@ -431,7 +405,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'EVGA',
                 'price' => 129.99,
                 'quantity' => 25,
-                'on_sale' => false,
                 'featured' => true
             ],
             [
@@ -442,7 +415,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Seasonic',
                 'price' => 119.99,
                 'quantity' => 30,
-                'on_sale' => true,
                 'featured' => false
             ],
             [
@@ -453,7 +425,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Cooler Master',
                 'price' => 69.99,
                 'quantity' => 40,
-                'on_sale' => false,
                 'featured' => false
             ],
             [
@@ -464,7 +435,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Thermaltake',
                 'price' => 59.99,
                 'quantity' => 35,
-                'on_sale' => true,
                 'featured' => true
             ],
         ])->each(function ($product) {
@@ -488,7 +458,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'NZXT',
                 'price' => 69.99,
                 'quantity' => 40,
-                'on_sale' => true,
                 'featured' => true
             ],
             [
@@ -499,7 +468,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Corsair',
                 'price' => 94.99,
                 'quantity' => 30,
-                'on_sale' => false,
                 'featured' => true
             ],
             [
@@ -510,7 +478,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Cooler Master',
                 'price' => 49.99,
                 'quantity' => 50,
-                'on_sale' => true,
                 'featured' => false
             ],
             [
@@ -521,7 +488,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Fractal Design',
                 'price' => 109.99,
                 'quantity' => 20,
-                'on_sale' => false,
                 'featured' => true
             ],
             [
@@ -532,7 +498,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Phanteks',
                 'price' => 89.99,
                 'quantity' => 25,
-                'on_sale' => true,
                 'featured' => false
             ],
         ])->each(function ($product) {
@@ -563,7 +528,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Noctua',
                 'price' => 89.99,
                 'quantity' => 20,
-                'on_sale' => true,
                 'featured' => true
             ],
             [
@@ -574,7 +538,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Cooler Master',
                 'price' => 49.99,
                 'quantity' => 30,
-                'on_sale' => false,
                 'featured' => true
             ],
             [
@@ -585,7 +548,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Corsair',
                 'price' => 149.99,
                 'quantity' => 15,
-                'on_sale' => true,
                 'featured' => true
             ],
             [
@@ -596,7 +558,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'be quiet!',
                 'price' => 89.99,
                 'quantity' => 25,
-                'on_sale' => false,
                 'featured' => false
             ],
             [
@@ -607,7 +568,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'NZXT',
                 'price' => 249.99,
                 'quantity' => 10,
-                'on_sale' => false,
                 'featured' => true
             ],
         ])->each(function ($product) {
@@ -632,7 +592,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Dell',
                 'price' => 649.99,
                 'quantity' => 20,
-                'on_sale' => false,
                 'featured' => true
             ],
             [
@@ -643,7 +602,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'LG',
                 'price' => 999.99,
                 'quantity' => 15,
-                'on_sale' => true,
                 'featured' => true
             ],
             [
@@ -654,7 +612,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'ASUS',
                 'price' => 429.99,
                 'quantity' => 25,
-                'on_sale' => true,
                 'featured' => false
             ],
             [
@@ -665,7 +622,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Samsung',
                 'price' => 799.99,
                 'quantity' => 10,
-                'on_sale' => false,
                 'featured' => true
             ],
             [
@@ -676,7 +632,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'BenQ',
                 'price' => 699.99,
                 'quantity' => 18,
-                'on_sale' => true,
                 'featured' => false
             ],
         ])->each(function ($product) {
@@ -708,7 +663,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Logitech',
                 'price' => 129.99,
                 'quantity' => 20,
-                'on_sale' => true,
                 'featured' => true
             ],
             [
@@ -719,7 +673,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Razer',
                 'price' => 199.99,
                 'quantity' => 15,
-                'on_sale' => false,
                 'featured' => true
             ],
             [
@@ -730,7 +683,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Corsair',
                 'price' => 199.99,
                 'quantity' => 10,
-                'on_sale' => true,
                 'featured' => false
             ],
             [
@@ -741,7 +693,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'SteelSeries',
                 'price' => 179.99,
                 'quantity' => 25,
-                'on_sale' => false,
                 'featured' => true
             ],
             [
@@ -752,7 +703,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'HyperX',
                 'price' => 109.99,
                 'quantity' => 30,
-                'on_sale' => true,
                 'featured' => false
             ],
         ])->each(function ($product) {
@@ -775,7 +725,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Logitech',
                 'price' => 49.99,
                 'quantity' => 30,
-                'on_sale' => true,
                 'featured' => true
             ],
             [
@@ -786,7 +735,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Razer',
                 'price' => 69.99,
                 'quantity' => 25,
-                'on_sale' => false,
                 'featured' => true
             ],
             [
@@ -797,7 +745,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Corsair',
                 'price' => 79.99,
                 'quantity' => 20,
-                'on_sale' => true,
                 'featured' => false
             ],
             [
@@ -808,7 +755,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'SteelSeries',
                 'price' => 59.99,
                 'quantity' => 15,
-                'on_sale' => false,
                 'featured' => true
             ],
             [
@@ -819,7 +765,6 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'HyperX',
                 'price' => 49.99,
                 'quantity' => 40,
-                'on_sale' => true,
                 'featured' => false
             ],
         ])->each(function ($product) {

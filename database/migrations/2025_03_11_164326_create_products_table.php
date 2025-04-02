@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('category');
             $table->string('brand');
             $table->string('model');
-            $table->boolean('on_sale')->default(false);
+            $table->boolean('on_offer')->default(false);
+            $table->integer('discount')->default(0);
             $table->boolean('featured')->default(false);
             $table->decimal('price', 8, 2);
             $table->integer('quantity');

@@ -24,7 +24,6 @@ class ProductFactory extends Factory
             'brand' => $this->faker->word(),
             'price' => $this->faker->randomFloat(2, 1),
             'quantity' => $this->faker->randomNumber(2),
-            'on_sale' => $this->faker->boolean(),
             'featured' => $this->faker->boolean(),
             'image' => 'https://res.cloudinary.com/dlmbw4who/image/upload/v1743097241/product-placeholder_jcgqx4.png',
         ];

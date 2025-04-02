@@ -17,7 +17,8 @@ class Product extends Model
         'brand',
         'price',
         'quantity',
-        'on_sale',
+        'on_offer',
+        'discount',
         'featured',
         'image'
     ];
