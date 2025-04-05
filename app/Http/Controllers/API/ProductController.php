@@ -60,27 +60,58 @@ class ProductController extends BaseController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UpdateProductRequest $request)
     {
-        //TODO
-        $product = $request->all();
+        DB::beginTransaction();
 
-        $validator = Validator::make($product, [
-            'name' => 'required|max:60',
-            'description' => 'required|max:255',
-            'price' => 'required|numeric',
-            'category' => 'required|max:60',
-            'brand' => 'required|max:60',
-            'quantity' => 'required|numeric',
-            'image' => 'required',
-        ]);
+        try {
+            $imageUrl = 'https://res.cloudinary.com/dlmbw4who/image/upload/v1743097241/product-placeholder_jcgqx4.png';
+            if ($request->hasFile('image')) {
+                $imageUrl = Cloudinary::upload(
+                    $request->file('image')->getRealPath(),
+                    [
+                        'folder' => 'bossloot/product-images',
+                    ]
+                )->getSecurePath();
+            }
 
-        if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors());
+            // Crear el producto
+            $product = Product::create([
+                'name' => $request->name,
+                'description' => $request->description,
+                'category' => $request->category,
+                'model' => $request->model,
+                'brand' => $request->brand,
+                'price' => $request->price,
+                'quantity' => $request->quantity,
+                'on_offer' => $request->on_offer,
+                'discount' => $request->discount,
+                'featured' => $request->featured,
+                'image' => $imageUrl
+            ]);
+
+            // Dynamically build relation method name (e.g. 'ram' becomes 'ramSpec')
+            $specMethod = $product->category . 'Spec';
+
+            if (method_exists($product, $specMethod)) {
+                // Get only fillable fields from related model (getRelated() returns the related model)
+                // $product->{$specMethod}() calls the function using the value saved in the $specMethod variable
+                $specData = $request->only(
+                    $product->{$specMethod}()->getRelated()->getFillable()
+                );
+
+                // Create related record with automatic FK assignment
+                $product->{$specMethod}()->create($specData);
+            }
+
+            DB::commit();
+
+            return $this->sendResponse(new ProductResource($product), 'Product created successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Error creating product: ' . $e->getMessage());
+            return $this->sendError('Failed to create product.', ['error' => $e->getMessage()]);
         }
-
-        $product = Product::create($product);
-        return $this->sendResponse(new ProductResource($product), 'Product created successfully.');
     }
 
     /**
@@ -232,19 +263,53 @@ class ProductController extends BaseController
             'gpu' => ['memory', 'memory_type', 'core_clock', 'boost_clock', 'consumption', 'length'],
             'cpu' => ['socket', 'core_count', 'thread_count', 'base_clock', 'boost_clock', 'consumption', 'integrated_graphics'],
             'motherboard' => [
-                'socket', 'chipset', 'form_factor', 'memory_max', 'memory_slots', 'memory_type', 'memory_speed',
-                'sata_ports', 'm_2_slots', 'pcie_slots', 'usb_ports', 'lan', 'audio', 'wifi', 'bluetooth'
+                'socket',
+                'chipset',
+                'form_factor',
+                'memory_max',
+                'memory_slots',
+                'memory_type',
+                'memory_speed',
+                'sata_ports',
+                'm_2_slots',
+                'pcie_slots',
+                'usb_ports',
+                'lan',
+                'audio',
+                'wifi',
+                'bluetooth'
             ],
             'storage' => ['type', 'capacity', 'rpm', 'read_speed', 'write_speed'],
             'psu' => ['efficiency_rating', 'wattage', 'modular', 'fanless', 'connectors'],
             'case' => [
-                'case_type', 'motherboard_support', 'side_panel', 'expansion_slots', 'max_gpu_length',
-                'max_cpu_cooler_height', 'radiator_support', 'extra_fans_connectors', 'width', 'height', 'depth', 'weight'
+                'case_type',
+                'motherboard_support',
+                'side_panel',
+                'expansion_slots',
+                'max_gpu_length',
+                'max_cpu_cooler_height',
+                'radiator_support',
+                'extra_fans_connectors',
+                'width',
+                'height',
+                'depth',
+                'weight'
             ],
             'cooler' => ['type', 'fan_rpm', 'consumption', 'socket_support', 'width', 'height'],
             'display' => [
-                'resolution', 'refresh_rate', 'response_time', 'panel_type', 'aspect_ratio', 'curved', 'brightness',
-                'contrast_ratio', 'sync_type', 'hdmi_ports', 'display_ports', 'inches', 'weight'
+                'resolution',
+                'refresh_rate',
+                'response_time',
+                'panel_type',
+                'aspect_ratio',
+                'curved',
+                'brightness',
+                'contrast_ratio',
+                'sync_type',
+                'hdmi_ports',
+                'display_ports',
+                'inches',
+                'weight'
             ],
             'keyboard' => ['switch_type', 'width', 'height', 'weight'],
             'mouse' => ['dpi', 'sensor', 'buttons', 'bluetooth', 'weight'],

@@ -17,7 +17,6 @@ class PsuSpec extends Model
         'wattage',
         'modular',
         'fanless',
-        'connectors'
     ];
 
     public function product()

@@ -18,7 +18,6 @@ return new class extends Migration
             $table->integer('wattage');
             $table->boolean('modular');
             $table->boolean('fanless');
-            $table->string('connectors');
         });
     }
 

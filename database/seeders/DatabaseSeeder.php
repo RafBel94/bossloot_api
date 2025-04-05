@@ -115,7 +115,7 @@ class DatabaseSeeder extends Seeder
                 'product_id' => $product->id,
                 'speed' => collect([2000, 2300, 2600, 3000, 3200, 3600])->random(),
                 'memory' => collect([8, 16, 32])->random(),
-                'memory_type' => 'DDR4',
+                'memory_type' => collect(['DDR3', 'DDR4', 'DDR5'])->random(),
                 'latency' => collect([16, 17, 18, 19, 20])->random(),
             ]);
         });
@@ -309,7 +309,7 @@ class DatabaseSeeder extends Seeder
                 'form_factor' => collect(['ATX', 'Micro-ATX', 'Mini-ITX'])->random(),
                 'memory_max' => collect([64, 128])->random(),
                 'memory_slots' => collect([2, 4])->random(),
-                'memory_type' => 'DDR4',
+                'memory_type' => collect(['DDR3', 'DDR4', 'DDR5'])->random(),
                 'memory_speed' => collect([3200, 3600, 4000])->random(),
                 'sata_ports' => collect([4, 6, 8])->random(),
                 'm_2_slots' => collect([1, 2, 3])->random(),
@@ -377,9 +377,9 @@ class DatabaseSeeder extends Seeder
         ])->each(function ($product) {
             StorageSpec::create([
                 'product_id' => $product->id,
-                'type' => collect(['SSD', 'HDD', 'NVMe'])->random(),
+                'type' => collect(['SSD', 'HDD', 'NVMe'. 'NVMe M.2'])->random(),
                 'capacity' => collect([500, 1000, 2000])->random(),
-                'rpm' => collect([5400, 7200])->random(),
+                'rpm' => collect([0, 5400, 7200])->random(),
                 'read_speed' => collect([500, 1000, 2000, 3500])->random(),
                 'write_speed' => collect([400, 800, 1500, 3000])->random(),
             ]);
@@ -443,8 +443,7 @@ class DatabaseSeeder extends Seeder
                 'efficiency_rating' => collect(['80+ Bronze', '80+ Silver', '80+ Gold', '80+ Platinum'])->random(),
                 'wattage' => collect([550, 600, 650, 750, 850])->random(),
                 'modular' => collect([true, false])->random(),
-                'fanless' => collect([true, false])->random(),
-                'connectors' => collect(['24-pin ATX', '8-pin CPU', '6+2-pin PCIe', 'SATA', 'Molex'])->random(),
+                'fanless' => collect([true, false])->random()
             ]);
         });
 
@@ -504,17 +503,17 @@ class DatabaseSeeder extends Seeder
             CaseSpec::create([
                 'product_id' => $product->id,
                 'case_type' => collect(['Mid Tower', 'Full Tower', 'Mini Tower'])->random(),
-                'motherboard_support' => collect(['ATX', 'Micro-ATX', 'Mini-ITX'])->random(),
+                'form_factor_support' => collect(['ATX', 'Micro-ATX', 'Mini-ITX'])->random(),
                 'side_panel' => collect([true, false])->random(),
                 'expansion_slots' => collect([4, 6, 7, 8])->random(),
                 'max_gpu_length' => collect([300, 320, 350, 400])->random(),
                 'max_cpu_cooler_height' => collect([150, 160, 170, 180])->random(),
                 'radiator_support' => collect([true, false])->random(),
                 'extra_fans_connectors' => collect([2, 3, 4, 5])->random(),
+                'depth' => collect([150, 180, 200])->random(),
                 'width' => collect([200, 210, 220])->random(),
-                'height' => collect([400, 450, 500])->random(),
-                'depth' => collect([400, 450, 500])->random(),
-                'weight' => collect([5, 6, 7, 8])->random(),
+                'height' => collect([100, 120, 130])->random(),
+                'weight' => round(mt_rand(500, 1200) / 100, 2),
             ]);
         });
 
@@ -640,7 +639,7 @@ class DatabaseSeeder extends Seeder
                 'resolution' => collect(['1920x1080', '2560x1440', '3840x2160'])->random(),
                 'refresh_rate' => collect([60, 120, 144, 165, 240])->random(),
                 'response_time' => collect([1, 2, 4, 5])->random(),
-                'panel_type' => collect(['IPS', 'VA', 'TN'])->random(),
+                'panel_type' => collect(['IPS', 'VA', 'OLED'])->random(),
                 'aspect_ratio' => collect(['16:9', '21:9', '32:9'])->random(),
                 'curved' => collect([true, false])->random(),
                 'brightness' => collect([250, 300, 350, 400])->random(),
@@ -710,7 +709,7 @@ class DatabaseSeeder extends Seeder
                 'product_id' => $product->id,
                 'switch_type' => collect(['Red', 'Blue', 'Brown'])->random(),
                 'width' => collect([350, 400, 450])->random(),
-                'height' => collect([30, 35, 40])->random(),
+                'height' => round(mt_rand(300, 500) / 100, 2),
                 'weight' => collect([0.8, 1.0, 1.2])->random(),
             ]);
         });
@@ -772,9 +771,9 @@ class DatabaseSeeder extends Seeder
                 'product_id' => $product->id,
                 'dpi' => collect([800, 1600, 3200, 6400, 12000])->random(),
                 'sensor' => collect(['Optical', 'Laser'])->random(),
-                'buttons' => collect([6, 8, 10, 12])->random(),
+                'buttons' => collect([5, 6, 7, 8, 10])->random(),
                 'bluetooth' => collect([true, false])->random(),
-                'weight' => collect([85, 95, 105, 120])->random(),
+                'weight' => round(mt_rand(50, 150) / 10, 1),
             ]);
         });
     }

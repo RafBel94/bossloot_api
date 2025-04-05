@@ -14,16 +14,16 @@ class CaseSpec extends Model
 
     protected $fillable = [
         'case_type',
-        'motherboard_support',
+        'form_factor_support',
         'side_panel',
         'expansion_slots',
         'max_gpu_length',
         'max_cpu_cooler_height',
         'radiator_support',
         'extra_fans_connectors',
+        'depth',
         'width',
         'height',
-        'depth',
         'weight'
     ];
 

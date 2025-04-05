@@ -15,16 +15,16 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->string('case_type');
-            $table->string('motherboard_support');
+            $table->string('form_factor_support');
             $table->boolean('side_panel');
             $table->integer('expansion_slots');
             $table->float('max_gpu_length');
             $table->float('max_cpu_cooler_height');
             $table->boolean('radiator_support');
             $table->integer('extra_fans_connectors');
+            $table->float('depth');
             $table->float('width');
             $table->float('height');
-            $table->float('depth');
             $table->float('weight');
         });
     }
