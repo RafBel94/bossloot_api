@@ -18,9 +18,16 @@ return new class extends Migration
             $table->integer('fan_rpm');
             $table->integer('consumption');
             $table->string('socket_support');
-            $table->float('width');
-            $table->float('height');
+            $table->decimal('width');
+            $table->decimal('height');
         });
+
+        DB::statement("ALTER TABLE cooler_specs ADD CONSTRAINT check_type CHECK (type IN ('Air', 'Liquid'))");
+        DB::statement('ALTER TABLE cooler_specs ADD CONSTRAINT check_fan_rpm_range CHECK (fan_rpm BETWEEN 1000 AND 3000)');
+        DB::statement('ALTER TABLE cooler_specs ADD CONSTRAINT check_consumption_range CHECK (consumption BETWEEN 5 AND 50)');
+        DB::statement("ALTER TABLE cooler_specs ADD CONSTRAINT check_socket_support CHECK (socket_support IN ('LGA1151', 'LGA1200', 'AM4', 'LGA1700', 'AM5', 'SP3', 'SP5', 'LGA2066'))");
+        DB::statement('ALTER TABLE cooler_specs ADD CONSTRAINT check_width_range CHECK (width BETWEEN 100 AND 300)');
+        DB::statement('ALTER TABLE cooler_specs ADD CONSTRAINT check_height_range CHECK (height BETWEEN 100 AND 300)');
     }
 
     /**

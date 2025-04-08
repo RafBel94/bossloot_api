@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -19,6 +20,11 @@ return new class extends Migration
             $table->string('memory_type');
             $table->integer('latency');
         });
+
+        DB::statement('ALTER TABLE ram_specs ADD CONSTRAINT check_speed_range CHECK (speed BETWEEN 800 AND 6000)');
+        DB::statement('ALTER TABLE ram_specs ADD CONSTRAINT check_memory_range CHECK (memory BETWEEN 4 AND 256)');
+        DB::statement("ALTER TABLE ram_specs ADD CONSTRAINT check_memory_type CHECK (memory_type IN ('DDR3', 'DDR4', 'DDR5'))");
+        DB::statement('ALTER TABLE ram_specs ADD CONSTRAINT check_latency_range CHECK (latency BETWEEN 7 AND 40)');
     }
 
     /**

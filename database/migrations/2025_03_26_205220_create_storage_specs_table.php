@@ -16,10 +16,16 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->string('type');
             $table->integer('capacity');
-            $table->integer('rpm')->nullable();
+            $table->integer('rpm');
             $table->integer('read_speed');
             $table->integer('write_speed');
         });
+
+        DB::statement("ALTER TABLE storage_specs ADD CONSTRAINT check_type CHECK (type IN ('SSD', 'HDD', 'NVMe', 'NVMe M.2'))");
+        DB::statement("ALTER TABLE storage_specs ADD CONSTRAINT check_capacity CHECK (capacity IN (120, 250, 500, 1000, 2000, 4000))");
+        DB::statement('ALTER TABLE storage_specs ADD CONSTRAINT check_rpm_range CHECK (rpm BETWEEN 0 AND 7200)');
+        DB::statement('ALTER TABLE storage_specs ADD CONSTRAINT check_read_speed_range CHECK (read_speed BETWEEN 100 AND 14000)');
+        DB::statement('ALTER TABLE storage_specs ADD CONSTRAINT check_write_speed_range CHECK (write_speed BETWEEN 100 AND 12000)');
     }
 
     /**

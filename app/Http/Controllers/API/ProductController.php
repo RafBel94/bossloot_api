@@ -25,20 +25,6 @@ use App\Models\MotherboardSpec;
 class ProductController extends BaseController
 {
 
-    protected $productRelations = [
-        'ramSpec',
-        'gpuSpec',
-        'cpuSpec',
-        'motherboardSpec',
-        'storageSpec',
-        'psuSpec',
-        'caseSpec',
-        'coolerSpec',
-        'displaySpec',
-        'keyboardSpec',
-        'mouseSpec',
-    ];
-
     /**
      * Display a listing of the resource.
      */
@@ -87,7 +73,8 @@ class ProductController extends BaseController
                 'on_offer' => $request->on_offer,
                 'discount' => $request->discount,
                 'featured' => $request->featured,
-                'image' => $imageUrl
+                'image' => $imageUrl,
+                'points' => $request->points,
             ]);
 
             // Dynamically build relation method name (e.g. 'ram' becomes 'ramSpec')
@@ -188,6 +175,7 @@ class ProductController extends BaseController
         $product->on_offer = $request->on_offer;
         $product->discount = $request->discount;
         $product->featured = $request->featured;
+        $product->points = $request->points;
         $product->save();
     }
 
@@ -280,11 +268,11 @@ class ProductController extends BaseController
                 'bluetooth'
             ],
             'storage' => ['type', 'capacity', 'rpm', 'read_speed', 'write_speed'],
-            'psu' => ['efficiency_rating', 'wattage', 'modular', 'fanless', 'connectors'],
+            'psu' => ['efficiency_rating', 'wattage', 'modular', 'fanless'],
             'case' => [
                 'case_type',
-                'motherboard_support',
-                'side_panel',
+                'form_factor_support',
+                'tempered_glass',
                 'expansion_slots',
                 'max_gpu_length',
                 'max_cpu_cooler_height',
@@ -311,7 +299,7 @@ class ProductController extends BaseController
                 'inches',
                 'weight'
             ],
-            'keyboard' => ['switch_type', 'width', 'height', 'weight'],
+            'keyboard' => ['type', 'switch_type', 'width', 'height', 'weight'],
             'mouse' => ['dpi', 'sensor', 'buttons', 'bluetooth', 'weight'],
         ];
 

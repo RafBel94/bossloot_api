@@ -15,7 +15,7 @@ class CaseSpec extends Model
     protected $fillable = [
         'case_type',
         'form_factor_support',
-        'side_panel',
+        'tempered_glass',
         'expansion_slots',
         'max_gpu_length',
         'max_cpu_cooler_height',

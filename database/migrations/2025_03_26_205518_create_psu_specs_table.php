@@ -19,6 +19,9 @@ return new class extends Migration
             $table->boolean('modular');
             $table->boolean('fanless');
         });
+
+        DB::statement("ALTER TABLE psu_specs ADD CONSTRAINT check_efficiency_rating CHECK (efficiency_rating IN ('80+ Bronze', '80+ Silver', '80+ Gold', '80+ Platinum'))");
+        DB::statement("ALTER TABLE psu_specs ADD CONSTRAINT check_wattage_range CHECK (wattage BETWEEN 100 AND 1500)");
     }
 
     /**

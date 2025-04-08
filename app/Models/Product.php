@@ -20,7 +20,8 @@ class Product extends Model
         'on_offer',
         'discount',
         'featured',
-        'image'
+        'image',
+        'points',
     ];
 
     public function specs()

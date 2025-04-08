@@ -26,7 +26,8 @@ class SimpleProductResource extends JsonResource
             'on_offer' => $this->on_offer,
             'discount' => $this->discount,
             'featured' => $this->featured,
-            'image' => $this->image
+            'image' => $this->image,
+            'points' => $this->points,
         ];
     }
 }

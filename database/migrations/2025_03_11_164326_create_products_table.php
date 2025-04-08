@@ -13,16 +13,17 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->text('description');
             $table->string('category');
             $table->string('brand');
             $table->string('model');
             $table->boolean('on_offer')->default(false);
-            $table->integer('discount')->default(0);
+            $table->decimal('discount')->default(0);
             $table->boolean('featured')->default(false);
             $table->decimal('price', 8, 2);
             $table->integer('quantity');
+            $table->integer('points')->default(0);
             $table->string('image')->default('https://res.cloudinary.com/dlmbw4who/image/upload/v1743097241/product-placeholder_jcgqx4.png');
             $table->timestamps();
         });

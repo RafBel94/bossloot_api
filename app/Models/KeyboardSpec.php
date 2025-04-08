@@ -13,6 +13,7 @@ class KeyboardSpec extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'type',
         'switch_type',
         'width',
         'height',
