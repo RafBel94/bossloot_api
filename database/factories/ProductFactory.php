@@ -19,12 +19,11 @@ class ProductFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'description' => $this->faker->text(),
-            'category' => $this->faker->word(),
             'model' => $this->faker->word(),
-            'brand' => $this->faker->word(),
             'price' => $this->faker->randomFloat(2, 1),
             'quantity' => $this->faker->randomNumber(2),
             'featured' => $this->faker->boolean(),
+            'points' => $this->faker->randomNumber(2),
             'image' => 'https://res.cloudinary.com/dlmbw4who/image/upload/v1743097241/product-placeholder_jcgqx4.png',
         ];
     }

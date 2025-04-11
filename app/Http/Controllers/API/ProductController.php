@@ -30,7 +30,7 @@ class ProductController extends BaseController
      */
     public function index()
     {
-        $products = Product::all();
+        $products = Product::with(['category', 'brand'])->get();
 
         return $this->sendResponse(SimpleProductResource::collection($products), 'Products retrieved successfully.');
     }
@@ -106,7 +106,7 @@ class ProductController extends BaseController
      */
     public function show(string $id)
     {
-        $product = Product::find($id);
+        $product = Product::with(['category', 'brand'])->find($id);
 
         if ($product == null) {
             return $this->sendError('Product not found.');
@@ -250,55 +250,12 @@ class ProductController extends BaseController
             'ram' => ['speed', 'latency', 'memory', 'memory_type'],
             'gpu' => ['memory', 'memory_type', 'core_clock', 'boost_clock', 'consumption', 'length'],
             'cpu' => ['socket', 'core_count', 'thread_count', 'base_clock', 'boost_clock', 'consumption', 'integrated_graphics'],
-            'motherboard' => [
-                'socket',
-                'chipset',
-                'form_factor',
-                'memory_max',
-                'memory_slots',
-                'memory_type',
-                'memory_speed',
-                'sata_ports',
-                'm_2_slots',
-                'pcie_slots',
-                'usb_ports',
-                'lan',
-                'audio',
-                'wifi',
-                'bluetooth'
-            ],
+            'motherboard' => ['socket','chipset','form_factor','memory_max','memory_slots','memory_type','memory_speed','sata_ports','m_2_slots','pcie_slots','usb_ports','lan','audio','wifi','bluetooth'],
             'storage' => ['type', 'capacity', 'rpm', 'read_speed', 'write_speed'],
             'psu' => ['efficiency_rating', 'wattage', 'modular', 'fanless'],
-            'case' => [
-                'case_type',
-                'form_factor_support',
-                'tempered_glass',
-                'expansion_slots',
-                'max_gpu_length',
-                'max_cpu_cooler_height',
-                'radiator_support',
-                'extra_fans_connectors',
-                'width',
-                'height',
-                'depth',
-                'weight'
-            ],
+            'case' => ['case_type','form_factor_support','tempered_glass','expansion_slots','max_gpu_length','max_cpu_cooler_height','radiator_support','extra_fans_connectors','width','height','depth','weight'],
             'cooler' => ['type', 'fan_rpm', 'consumption', 'socket_support', 'width', 'height'],
-            'display' => [
-                'resolution',
-                'refresh_rate',
-                'response_time',
-                'panel_type',
-                'aspect_ratio',
-                'curved',
-                'brightness',
-                'contrast_ratio',
-                'sync_type',
-                'hdmi_ports',
-                'display_ports',
-                'inches',
-                'weight'
-            ],
+            'display' => ['resolution','refresh_rate','response_time','panel_type','aspect_ratio','curved','brightness','contrast_ratio','sync_type','hdmi_ports','display_ports','inches','weight'],
             'keyboard' => ['type', 'switch_type', 'width', 'height', 'weight'],
             'mouse' => ['dpi', 'sensor', 'buttons', 'bluetooth', 'weight'],
         ];

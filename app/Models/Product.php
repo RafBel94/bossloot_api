@@ -12,9 +12,7 @@ class Product extends Model
     protected $fillable = [
         'name',
         'description',
-        'category',
         'model',
-        'brand',
         'price',
         'quantity',
         'on_offer',
@@ -26,21 +24,37 @@ class Product extends Model
 
     public function specs()
     {
-        $relations = [
-            'ram' => $this->ramSpec(),
-            'gpu' => $this->gpuSpec(),
-            'cpu' => $this->cpuSpec(),
-            'motherboard' => $this->motherboardSpec(),
-            'storage' => $this->storageSpec(),
-            'psu' => $this->psuSpec(),
-            'case' => $this->caseSpec(),
-            'cooler' => $this->coolerSpec(),
-            'display' => $this->displaySpec(),
-            'keyboard' => $this->keyboardSpec(),
-            'mouse' => $this->mouseSpec(),
+
+        $categoryToSpecMap = [
+            1 => 'ram',
+            2 => 'gpu',
+            3 => 'cpu',
+            4 => 'motherboard',
+            5 => 'storage',
+            6 => 'psu',
+            7 => 'case',
+            8 => 'cooler',
+            9 => 'display',
+            10 => 'keyboard',
+            11 => 'mouse',
         ];
 
-        return $relations[$this->category] ?? null;
+        $specType = $categoryToSpecMap[$this->category_id] ?? null;
+
+        if (!$specType) {
+            return null;
+        }
+
+        return $this->{"{$specType}Spec"}();
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
     }
 
     public function ramSpec()

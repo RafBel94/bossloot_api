@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->text('description');
-            $table->string('category');
-            $table->string('brand');
+            $table->foreignId('category_id');
+            $table->foreignId('brand_id');
             $table->string('model');
             $table->boolean('on_offer')->default(false);
             $table->decimal('discount')->default(0);

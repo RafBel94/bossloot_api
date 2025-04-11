@@ -21,10 +21,10 @@ return new class extends Migration
             $table->decimal('weight');
         });
 
-        DB::statement('ALTER TABLE mouse_specs ADD CONSTRAINT check_dpi_range CHECK (dpi BETWEEN 600 AND 20000)');
-        DB::statement("ALTER TABLE mouse_specs ADD CONSTRAINT check_sensor_type CHECK (sensor IN ('Optical', 'Laser'))");
-        DB::statement('ALTER TABLE mouse_specs ADD CONSTRAINT check_buttons_range CHECK (buttons BETWEEN 2 AND 20)');
-        DB::statement('ALTER TABLE mouse_specs ADD CONSTRAINT check_weight_range CHECK (weight BETWEEN 50 AND 150)');
+        DB::statement('ALTER TABLE mouse_specs ADD CONSTRAINT check_mouse_dpi_range CHECK (dpi BETWEEN 600 AND 20000)');
+        DB::statement("ALTER TABLE mouse_specs ADD CONSTRAINT check_mouse_sensor_type CHECK (sensor IN ('Optical', 'Laser'))");
+        DB::statement('ALTER TABLE mouse_specs ADD CONSTRAINT check_mouse_buttons_range CHECK (buttons BETWEEN 2 AND 20)');
+        DB::statement('ALTER TABLE mouse_specs ADD CONSTRAINT check_mouse_weight_range CHECK (weight BETWEEN 50 AND 150)');
     }
 
     /**

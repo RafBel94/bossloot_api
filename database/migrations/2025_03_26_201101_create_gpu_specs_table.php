@@ -22,12 +22,12 @@ return new class extends Migration
             $table->decimal('length');
         });
 
-        DB::statement('ALTER TABLE gpu_specs ADD CONSTRAINT check_memory_range CHECK (memory BETWEEN 2 AND 24)');
-        DB::statement("ALTER TABLE gpu_specs ADD CONSTRAINT check_memory_type CHECK (memory_type IN ('GDDR5', 'GDDR6'))");
-        DB::statement('ALTER TABLE gpu_specs ADD CONSTRAINT check_core_clock_range CHECK (core_clock BETWEEN 800 AND 8000)');
-        DB::statement('ALTER TABLE gpu_specs ADD CONSTRAINT check_boost_clock_range CHECK (boost_clock BETWEEN 800 AND 8000)');
-        DB::statement('ALTER TABLE gpu_specs ADD CONSTRAINT check_consumption_range CHECK (consumption BETWEEN 25 AND 500)');
-        DB::statement('ALTER TABLE gpu_specs ADD CONSTRAINT check_length_range CHECK (length BETWEEN 80 AND 400)');
+        DB::statement('ALTER TABLE gpu_specs ADD CONSTRAINT check_gpu_memory_range CHECK (memory BETWEEN 2 AND 24)');
+        DB::statement("ALTER TABLE gpu_specs ADD CONSTRAINT check_gpu_memory_type CHECK (memory_type IN ('GDDR5', 'GDDR6'))");
+        DB::statement('ALTER TABLE gpu_specs ADD CONSTRAINT check_gpu_core_clock_range CHECK (core_clock BETWEEN 800 AND 8000)');
+        DB::statement('ALTER TABLE gpu_specs ADD CONSTRAINT check_gpu_boost_clock_range CHECK (boost_clock BETWEEN 800 AND 8000)');
+        DB::statement('ALTER TABLE gpu_specs ADD CONSTRAINT check_gpu_consumption_range CHECK (consumption BETWEEN 25 AND 500)');
+        DB::statement('ALTER TABLE gpu_specs ADD CONSTRAINT check_gpu_length_range CHECK (length BETWEEN 80 AND 400)');
     }
 
     /**

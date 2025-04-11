@@ -18,9 +18,7 @@ class SimpleProductResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'category' => $this->category,
             'model' => $this->model,
-            'brand' => $this->brand,
             'price' => $this->price,
             'quantity' => $this->quantity,
             'on_offer' => $this->on_offer,
@@ -28,6 +26,8 @@ class SimpleProductResource extends JsonResource
             'featured' => $this->featured,
             'image' => $this->image,
             'points' => $this->points,
+            'category' => $this->whenLoaded('category', fn() => $this->category->name),
+            'brand' => $this->whenLoaded('brand', fn() => $this->brand->name),
         ];
     }
 }

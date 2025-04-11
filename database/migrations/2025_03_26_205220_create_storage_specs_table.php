@@ -21,11 +21,11 @@ return new class extends Migration
             $table->integer('write_speed');
         });
 
-        DB::statement("ALTER TABLE storage_specs ADD CONSTRAINT check_type CHECK (type IN ('SSD', 'HDD', 'NVMe', 'NVMe M.2'))");
-        DB::statement("ALTER TABLE storage_specs ADD CONSTRAINT check_capacity CHECK (capacity IN (120, 250, 500, 1000, 2000, 4000))");
-        DB::statement('ALTER TABLE storage_specs ADD CONSTRAINT check_rpm_range CHECK (rpm BETWEEN 0 AND 7200)');
-        DB::statement('ALTER TABLE storage_specs ADD CONSTRAINT check_read_speed_range CHECK (read_speed BETWEEN 100 AND 14000)');
-        DB::statement('ALTER TABLE storage_specs ADD CONSTRAINT check_write_speed_range CHECK (write_speed BETWEEN 100 AND 12000)');
+        DB::statement("ALTER TABLE storage_specs ADD CONSTRAINT check_storage_type CHECK (type IN ('SSD', 'HDD', 'NVMe', 'NVMe M.2'))");
+        DB::statement("ALTER TABLE storage_specs ADD CONSTRAINT check_storage_capacity CHECK (capacity IN (120, 250, 500, 1000, 2000, 4000))");
+        DB::statement('ALTER TABLE storage_specs ADD CONSTRAINT check_storage_rpm_range CHECK (rpm BETWEEN 0 AND 7200)');
+        DB::statement('ALTER TABLE storage_specs ADD CONSTRAINT check_storage_read_speed_range CHECK (read_speed BETWEEN 100 AND 14000)');
+        DB::statement('ALTER TABLE storage_specs ADD CONSTRAINT check_storage_write_speed_range CHECK (write_speed BETWEEN 100 AND 12000)');
     }
 
     /**
