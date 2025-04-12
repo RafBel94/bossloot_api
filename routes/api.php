@@ -4,6 +4,8 @@ use App\Http\Controllers\API\VerificationController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ProductController;
+use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\BrandController;
 
 // User routes
 Route::resource('users', UserController::class)->except(['store'])->middleware(['auth:sanctum', 'role:admin']);
@@ -20,3 +22,10 @@ Route::resource('products', ProductController::class)->only(['index', 'show']);
 Route::post('products', [ProductController::class, 'store'])->middleware(['auth:sanctum', 'role:admin']);
 Route::put('products/{id}', [ProductController::class, 'update'])->middleware(['auth:sanctum', 'role:admin']);
 Route::delete('products/{id}', [ProductController::class, 'destroy'])->middleware(['auth:sanctum', 'role:admin']);
+
+// Category routes
+Route::resource('categories', CategoryController::class)->middleware(['auth:sanctum', 'role:admin']);
+
+// Brand routes
+Route::resource('brands', BrandController::class)->middleware(['auth:sanctum', 'role:admin']);
+

@@ -25,6 +25,34 @@ use App\Models\MotherboardSpec;
 class ProductController extends BaseController
 {
 
+    private const CATEGORY_TO_SPEC_MAP = [
+        1 => 'ramSpec',
+        2 => 'gpuSpec',
+        3 => 'cpuSpec',
+        4 => 'motherboardSpec',
+        5 => 'storageSpec',
+        6 => 'psuSpec',
+        7 => 'caseSpec',
+        8 => 'coolerSpec',
+        9 => 'displaySpec',
+        10 => 'keyboardSpec',
+        11 => 'mouseSpec'
+    ];
+
+    private const SPEC_FIELDS_MAP = [
+        'ram' => ['speed', 'latency', 'memory', 'memory_type'],
+        'gpu' => ['memory', 'memory_type', 'core_clock', 'boost_clock', 'consumption', 'length'],
+        'cpu' => ['socket', 'core_count', 'thread_count', 'base_clock', 'boost_clock', 'consumption', 'integrated_graphics'],
+        'motherboard' => ['socket', 'chipset', 'form_factor', 'memory_max', 'memory_slots', 'memory_type', 'memory_speed', 'sata_ports', 'm_2_slots', 'pcie_slots', 'usb_ports', 'lan', 'audio', 'wifi', 'bluetooth'],
+        'storage' => ['type', 'capacity', 'rpm', 'read_speed', 'write_speed'],
+        'psu' => ['efficiency_rating', 'wattage', 'modular', 'fanless'],
+        'case' => ['case_type', 'form_factor_support', 'tempered_glass', 'expansion_slots', 'max_gpu_length', 'max_cpu_cooler_height', 'radiator_support', 'extra_fans_connectors', 'width', 'height', 'depth', 'weight'],
+        'cooler' => ['type', 'fan_rpm', 'consumption', 'socket_support', 'width', 'height'],
+        'display' => ['resolution', 'refresh_rate', 'response_time', 'panel_type', 'aspect_ratio', 'curved', 'brightness', 'contrast_ratio', 'sync_type', 'hdmi_ports', 'display_ports', 'inches', 'weight'],
+        'keyboard' => ['type', 'switch_type', 'width', 'height', 'weight'],
+        'mouse' => ['dpi', 'sensor', 'buttons', 'bluetooth', 'weight'],
+    ];
+
     /**
      * Display a listing of the resource.
      */
@@ -61,13 +89,11 @@ class ProductController extends BaseController
                 )->getSecurePath();
             }
 
-            // Crear el producto
-            $product = Product::create([
+            // Create the product
+            $product = new Product([
                 'name' => $request->name,
                 'description' => $request->description,
-                'category' => $request->category,
                 'model' => $request->model,
-                'brand' => $request->brand,
                 'price' => $request->price,
                 'quantity' => $request->quantity,
                 'on_offer' => $request->on_offer,
@@ -77,10 +103,19 @@ class ProductController extends BaseController
                 'points' => $request->points,
             ]);
 
-            // Dynamically build relation method name (e.g. 'ram' becomes 'ramSpec')
-            $specMethod = $product->category . 'Spec';
+            // Attach the category and brand to the product
+            $categoryId = $request->category_id;
+            $brandId = $request->brand_id;
 
-            if (method_exists($product, $specMethod)) {
+            $product->category()->associate($categoryId);
+            $product->brand()->associate($brandId);
+            $product->save();
+
+            // Get the spec method name based on the category ID
+            $specMethod = self::CATEGORY_TO_SPEC_MAP[$product->category_id] ?? null;
+
+            // Check if the spec method exists and is callable
+            if ($specMethod && method_exists($product, $specMethod)) {
                 // Get only fillable fields from related model (getRelated() returns the related model)
                 // $product->{$specMethod}() calls the function using the value saved in the $specMethod variable
                 $specData = $request->only(
@@ -89,6 +124,9 @@ class ProductController extends BaseController
 
                 // Create related record with automatic FK assignment
                 $product->{$specMethod}()->create($specData);
+            } else {
+                DB::rollBack();
+                return $this->sendError('Invalid category or missing specs.');
             }
 
             DB::commit();
@@ -138,7 +176,7 @@ class ProductController extends BaseController
 
         try {
             $this->updateProductGeneralSpecs($request, $product);
-            $this->updateProductTechnicalSpecs($request, $id);
+            $this->updateProductTechnicalSpecs($request, $product);
 
             DB::commit();
             return $this->sendResponse(new ProductResource($product), 'Product updated successfully.');
@@ -165,17 +203,25 @@ class ProductController extends BaseController
             )->getSecurePath();
         }
 
-        $product->name = $request->name;
-        $product->description = $request->description;
-        $product->category = $request->category;
-        $product->model = $request->model;
-        $product->brand = $request->brand;
-        $product->price = $request->price;
-        $product->quantity = $request->quantity;
-        $product->on_offer = $request->on_offer;
-        $product->discount = $request->discount;
-        $product->featured = $request->featured;
-        $product->points = $request->points;
+        $product->fill($request->only([
+            'name',
+            'description',
+            'model',
+            'price',
+            'quantity',
+            'on_offer',
+            'discount',
+            'featured',
+            'points'
+        ]));
+
+        if ($request->has('category_id')) {
+            $product->category()->associate($request->category_id);
+        }
+        if ($request->has('brand_id')) {
+            $product->brand()->associate($request->brand_id);
+        }
+
         $product->save();
     }
 
@@ -213,66 +259,34 @@ class ProductController extends BaseController
         return $matches[1] ?? null;
     }
 
-    private function updateProductTechnicalSpecs(UpdateProductRequest $request, int $id)
+    private function updateProductTechnicalSpecs(UpdateProductRequest $request, Product $product)
     {
-        $productSpecsModel = $this->getProductSpecsEntity($request->category, $id);
 
+        $specMethod = self::CATEGORY_TO_SPEC_MAP[$product->category_id] ?? null;
 
-        if ($productSpecsModel) {
-            $this->updateSpecificSpecs($request, $productSpecsModel);
-        } else {
-            return $this->sendError('Invalid category.');
+        if (!$specMethod || !method_exists($product, $specMethod)) {
+            throw new \Exception('Invalid product category');
         }
+
+        $specModel = $product->{$specMethod}()->firstOrNew();
+        $this->updateSpecificSpecs($product->category_id, $request, $specModel);
     }
 
-    private function getProductSpecsEntity(string $category, int $id)
+    private function updateSpecificSpecs(int $categoryId, UpdateProductRequest $request, $specModel)
     {
-        return match ($category) {
-            'ram' => RamSpec::where('product_id', $id)->first(),
-            'gpu' => GpuSpec::where('product_id', $id)->first(),
-            'cpu' => CpuSpec::where('product_id', $id)->first(),
-            'motherboard' => MotherboardSpec::where('product_id', $id)->first(),
-            'storage' => StorageSpec::where('product_id', $id)->first(),
-            'psu' => PsuSpec::where('product_id', $id)->first(),
-            'case' => CaseSpec::where('product_id', $id)->first(),
-            'cooler' => CoolerSpec::where('product_id', $id)->first(),
-            'display' => DisplaySpec::where('product_id', $id)->first(),
-            'keyboard' => KeyboardSpec::where('product_id', $id)->first(),
-            'mouse' => MouseSpec::where('product_id', $id)->first(),
-            default => null,
-        };
-    }
+        $editableFields = self::SPEC_FIELDS_MAP[$categoryId] ?? [];
 
-    private function updateSpecificSpecs(UpdateProductRequest $request, $productSpecsModel)
-    {
-        // Map the fields to be updated based on the category
-        $fieldsMap = [
-            'ram' => ['speed', 'latency', 'memory', 'memory_type'],
-            'gpu' => ['memory', 'memory_type', 'core_clock', 'boost_clock', 'consumption', 'length'],
-            'cpu' => ['socket', 'core_count', 'thread_count', 'base_clock', 'boost_clock', 'consumption', 'integrated_graphics'],
-            'motherboard' => ['socket','chipset','form_factor','memory_max','memory_slots','memory_type','memory_speed','sata_ports','m_2_slots','pcie_slots','usb_ports','lan','audio','wifi','bluetooth'],
-            'storage' => ['type', 'capacity', 'rpm', 'read_speed', 'write_speed'],
-            'psu' => ['efficiency_rating', 'wattage', 'modular', 'fanless'],
-            'case' => ['case_type','form_factor_support','tempered_glass','expansion_slots','max_gpu_length','max_cpu_cooler_height','radiator_support','extra_fans_connectors','width','height','depth','weight'],
-            'cooler' => ['type', 'fan_rpm', 'consumption', 'socket_support', 'width', 'height'],
-            'display' => ['resolution','refresh_rate','response_time','panel_type','aspect_ratio','curved','brightness','contrast_ratio','sync_type','hdmi_ports','display_ports','inches','weight'],
-            'keyboard' => ['type', 'switch_type', 'width', 'height', 'weight'],
-            'mouse' => ['dpi', 'sensor', 'buttons', 'bluetooth', 'weight'],
-        ];
-
-        $category = $request->category;
-
-        // Check if the category exists in the fields map
-        if (isset($fieldsMap[$category])) {
-            // Update the fields based on the request
-            foreach ($fieldsMap[$category] as $field) {
-                if ($request->has($field)) {
-                    $productSpecsModel->$field = $request->$field;
-                }
+        // Filter the request data to only include editable fields
+        $validatedData = [];
+        foreach ($editableFields as $field) {
+            if ($request->has($field)) {
+                $validatedData[$field] = $request->input($field);
             }
+        }
 
-            // Save the updated model
-            $productSpecsModel->save();
+        // Validate the data and update the model
+        if (!empty($validatedData)) {
+            $specModel->fill($validatedData)->save();
         }
     }
 

@@ -1,14 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\API\BaseController;
+use App\Models\Brand;
 
-class CategoryController extends Controller
+class BrandController extends BaseController
 {
     public function index()
     {
-        // todo: Display a listing of the resource
+        $brands = Brand::all();
+
+        return $this->sendResponse($brands, 'Brands retrieved successfully.');
     }
 
     public function create()
@@ -23,7 +27,13 @@ class CategoryController extends Controller
 
     public function show($id)
     {
-        // todo: Display the specified resource
+        $brand = Brand::find($id);
+
+        if ($brand == null) {
+            return $this->sendError('Brand not found.');
+        }
+
+        return $this->sendResponse($brand, 'Brand retrieved successfully.');
     }
 
     public function edit($id)
