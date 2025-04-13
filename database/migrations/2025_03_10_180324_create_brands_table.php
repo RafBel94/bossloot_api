@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('brands', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
+            $table->string('description')->default('Company description');
+            $table->string(column: 'image')->default('https://res.cloudinary.com/dlmbw4who/image/upload/v1744482271/brand-placeholder_loirll.png');
             $table->timestamps();
         });
     }

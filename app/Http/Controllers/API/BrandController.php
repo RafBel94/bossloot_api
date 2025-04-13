@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\API;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\BrandRequest;
 use App\Http\Controllers\API\BaseController;
 use App\Models\Brand;
+use Illuminate\Support\Facades\DB;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class BrandController extends BaseController
 {
@@ -15,14 +17,33 @@ class BrandController extends BaseController
         return $this->sendResponse($brands, 'Brands retrieved successfully.');
     }
 
-    public function create()
+    public function store(BrandRequest $request)
     {
-        // todo: Show the form for creating a new resource
-    }
+        DB::beginTransaction();
 
-    public function store(Request $request)
-    {
-        // todo: Store a newly created resource in storage
+        try {
+            $imageUrl = 'https://res.cloudinary.com/dlmbw4who/image/upload/v1744482271/brand-placeholder_loirll.png';
+            if ($request->hasFile('image')) {
+                $imageUrl = Cloudinary::upload(
+                    $request->file('image')->getRealPath(),
+                    [
+                        'folder' => 'bossloot/brand-images',
+                    ]
+                )->getSecurePath();
+            }
+
+            $brand = new Brand($request->all());
+            $brand->image = $imageUrl;
+            $brand->save();
+
+            DB::commit();
+
+            return $this->sendResponse($brand, 'Brand created successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            logger()->error('Brand creation failed: ' . $e->getMessage());
+            return $this->sendError('Brand creation failed: ' . $e->getMessage());
+        }
     }
 
     public function show($id)
@@ -36,18 +57,87 @@ class BrandController extends BaseController
         return $this->sendResponse($brand, 'Brand retrieved successfully.');
     }
 
-    public function edit($id)
+    public function update(BrandRequest $request, $id)
     {
-        // todo: Show the form for editing the specified resource
+        $brand = Brand::find($id);
+
+        if ($brand == null) {
+            return $this->sendError('Brand not found.');
+        }
+
+        DB::beginTransaction();
+        try {
+            if ($request->hasFile('image')) {
+                $this->deleteOldImage($brand->image);
+
+                $brand->image = Cloudinary::upload(
+                    $request->file('image')->getRealPath(),
+                    [
+                        'folder' => 'bossloot/brand-images',
+                    ]
+                )->getSecurePath();
+            }
+
+            $brand->fill($request->except('image'));
+            $brand->save();
+
+            DB::commit();
+            return $this->sendResponse($brand, 'Brand updated successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            logger()->error('Brand update failed: ' . $e->getMessage());
+            return $this->sendError('Brand update failed: ' . $e->getMessage());
+        }
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Delete the old brand image from Cloudinary.
+     */
+    protected function deleteOldImage(?string $url): void
     {
-        // todo: Update the specified resource in storage
+        // Dont delete the default image
+        $defaultImage = 'https://res.cloudinary.com/dlmbw4who/image/upload/v1744482271/brand-placeholder_loirll.png';
+
+        if (empty($url) || $url === $defaultImage) {
+            return;
+        }
+
+        try {
+            $publicId = $this->extractPublicIdFromUrl($url);
+
+            if ($publicId) {
+                Cloudinary::destroy($publicId);
+            }
+        } catch (\Exception $e) {
+            \Log::error("Error deleting old brand picture: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Extract public ID from Cloudinary URL.
+     */
+    protected function extractPublicIdFromUrl(string $url): ?string
+    {
+        $pattern = '/upload\/(?:v\d+\/)?([^\.]+)/';
+        preg_match($pattern, $url, $matches);
+
+        return $matches[1] ?? null;
     }
 
     public function destroy($id)
     {
-        // todo: Remove the specified resource from storage
+        if ($id == 1) {
+            return $this->sendError("It's not possible to delete the default brand", [], 403);
+        }
+
+        $brand = Brand::find($id);
+
+        if ($brand == null) {
+            return $this->sendError('Brand not found.');
+        }
+
+        $brand->delete();
+
+        return $this->sendResponse([], 'Brand deleted successfully.');
     }
 }
