@@ -40,17 +40,17 @@ class ProductController extends BaseController
     ];
 
     private const SPEC_FIELDS_MAP = [
-        'ram' => ['speed', 'latency', 'memory', 'memory_type'],
-        'gpu' => ['memory', 'memory_type', 'core_clock', 'boost_clock', 'consumption', 'length'],
-        'cpu' => ['socket', 'core_count', 'thread_count', 'base_clock', 'boost_clock', 'consumption', 'integrated_graphics'],
-        'motherboard' => ['socket', 'chipset', 'form_factor', 'memory_max', 'memory_slots', 'memory_type', 'memory_speed', 'sata_ports', 'm_2_slots', 'pcie_slots', 'usb_ports', 'lan', 'audio', 'wifi', 'bluetooth'],
-        'storage' => ['type', 'capacity', 'rpm', 'read_speed', 'write_speed'],
-        'psu' => ['efficiency_rating', 'wattage', 'modular', 'fanless'],
-        'case' => ['case_type', 'form_factor_support', 'tempered_glass', 'expansion_slots', 'max_gpu_length', 'max_cpu_cooler_height', 'radiator_support', 'extra_fans_connectors', 'width', 'height', 'depth', 'weight'],
-        'cooler' => ['type', 'fan_rpm', 'consumption', 'socket_support', 'width', 'height'],
-        'display' => ['resolution', 'refresh_rate', 'response_time', 'panel_type', 'aspect_ratio', 'curved', 'brightness', 'contrast_ratio', 'sync_type', 'hdmi_ports', 'display_ports', 'inches', 'weight'],
-        'keyboard' => ['type', 'switch_type', 'width', 'height', 'weight'],
-        'mouse' => ['dpi', 'sensor', 'buttons', 'bluetooth', 'weight'],
+        1 => ['speed', 'latency', 'memory', 'memory_type'],
+        2 => ['memory', 'memory_type', 'core_clock', 'boost_clock', 'consumption', 'length'],
+        3 => ['socket', 'core_count', 'thread_count', 'base_clock', 'boost_clock', 'consumption', 'integrated_graphics'],
+        4 => ['socket', 'chipset', 'form_factor', 'memory_max', 'memory_slots', 'memory_type', 'memory_speed', 'sata_ports', 'm_2_slots', 'pcie_slots', 'usb_ports', 'lan', 'audio', 'wifi', 'bluetooth'],
+        5 => ['type', 'capacity', 'rpm', 'read_speed', 'write_speed'],
+        6 => ['efficiency_rating', 'wattage', 'modular', 'fanless'],
+        7 => ['case_type', 'form_factor_support', 'tempered_glass', 'expansion_slots', 'max_gpu_length', 'max_cpu_cooler_height', 'radiator_support', 'extra_fans_connectors', 'width', 'height', 'depth', 'weight'],
+        8 => ['type', 'fan_rpm', 'consumption', 'socket_support', 'width', 'height'],
+        9 => ['resolution', 'refresh_rate', 'response_time', 'panel_type', 'aspect_ratio', 'curved', 'brightness', 'contrast_ratio', 'sync_type', 'hdmi_ports', 'display_ports', 'inches', 'weight'],
+        10 => ['type', 'switch_type', 'width', 'height', 'weight'],
+        11 => ['dpi', 'sensor', 'buttons', 'bluetooth', 'weight'],
     ];
 
     /**
@@ -269,24 +269,19 @@ class ProductController extends BaseController
         }
 
         $specModel = $product->{$specMethod}()->firstOrNew();
+
         $this->updateSpecificSpecs($product->category_id, $request, $specModel);
     }
 
     private function updateSpecificSpecs(int $categoryId, UpdateProductRequest $request, $specModel)
     {
-        $editableFields = self::SPEC_FIELDS_MAP[$categoryId] ?? [];
+        $fieldsToUpdate = self::SPEC_FIELDS_MAP[$categoryId] ?? null;
+        
+        if ($fieldsToUpdate) {
+            $data = $request->only($fieldsToUpdate);
 
-        // Filter the request data to only include editable fields
-        $validatedData = [];
-        foreach ($editableFields as $field) {
-            if ($request->has($field)) {
-                $validatedData[$field] = $request->input($field);
-            }
-        }
-
-        // Validate the data and update the model
-        if (!empty($validatedData)) {
-            $specModel->fill($validatedData)->save();
+            $specModel->fill($data);
+            $specModel->save();
         }
     }
 

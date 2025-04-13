@@ -88,6 +88,7 @@ class DatabaseSeeder extends Seeder
     private function seedBrands(): void
     {
         $brands = [
+            ['name' => 'No Brand'],
             ['name' => 'Corsair'],
             ['name' => 'Kingston'],
             ['name' => 'Crucial'],
@@ -140,11 +141,25 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Fnatic'],
             ['name' => 'Lian Li'],
             ['name' => 'Phanteks'],
-            ['name' => 'Ducky'],
+            ['name' => 'Ducky']
         ];
 
         foreach ($brands as $brand) {
-            Brand::create($brand);
+            if ($brand['name'] == 'No Brand') {
+                Brand::create([
+                    'name' => $brand['name'],
+                    'description' => 'Default brand for products without a specific brand or that have lost their brand through a brand deletion.',
+                    'image' => 'https://res.cloudinary.com/dlmbw4who/image/upload/v1744482271/brand-placeholder_loirll.png'
+
+                ]);
+            } else {
+                Brand::create([
+                    'name' => $brand['name'],
+                    'description' => $brand['name'] . ' is a well-known brand in the PC hardware industry.',
+                    'image' => 'https://res.cloudinary.com/dlmbw4who/image/upload/v1744482271/brand-placeholder_loirll.png'
+
+                ]);
+            }
         }
     }
 
@@ -156,7 +171,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'High-performance DDR4 RAM',
             'category_id' => 1,
             'model' => 'CMK32GX4M2B3200C16',
-            'brand_id' => 1,
+            'brand_id' => 2,
             'price' => 36.99,
             'quantity' => 50,
             'featured' => true
@@ -175,7 +190,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'Affordable DDR4 RAM for gaming',
             'category_id' => 1,
             'model' => 'BL2K8G36C16U4B',
-            'brand_id' => 3,
+            'brand_id' => 4,
             'price' => 39.99,
             'quantity' => 30,
             'featured' => false
@@ -194,7 +209,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'High-performance RAM for gaming and productivity',
             'category_id' => 1,
             'model' => 'F4-3200C16D-16GVKB',
-            'brand_id' => 4,
+            'brand_id' => 5,
             'price' => 49.99,
             'quantity' => 20,
             'featured' => false
@@ -214,7 +229,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'Top-tier gaming GPU with 24GB VRAM',
             'category_id' => 2,
             'model' => 'RTX3090',
-            'brand_id' => 10,
+            'brand_id' => 11,
             'price' => 1499.99,
             'quantity' => 5,
             'featured' => true
@@ -235,7 +250,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'High-end gaming GPU with 16GB VRAM',
             'category_id' => 2,
             'model' => 'RX6900XT',
-            'brand_id' => 8,
+            'brand_id' => 9,
             'price' => 999.99,
             'quantity' => 8,
             'featured' => true
@@ -256,7 +271,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'Mid-range gaming GPU with 8GB VRAM',
             'category_id' => 2,
             'model' => 'RTX3070',
-            'brand_id' => 10,
+            'brand_id' => 11,
             'price' => 499.99,
             'quantity' => 12,
             'featured' => true
@@ -278,7 +293,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'High-performance 8-core processor',
             'category_id' => 3,
             'model' => 'i9-11900K',
-            'brand_id' => 9,
+            'brand_id' => 10,
             'price' => 599.99,
             'quantity' => 5,
             'featured' => true
@@ -300,7 +315,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'Budget-friendly 4-core processor',
             'category_id' => 3,
             'model' => 'Ryzen 3 3300X',
-            'brand_id' => 8,
+            'brand_id' => 9,
             'price' => 119.99,
             'quantity' => 10,
             'featured' => false
@@ -322,7 +337,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'Budget-friendly 4-core processor',
             'category_id' => 3,
             'model' => 'i3-10100',
-            'brand_id' => 9,
+            'brand_id' => 10,
             'price' => 119.99,
             'quantity' => 10,
             'featured' => false
@@ -345,7 +360,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'High-end motherboard for Intel processors',
             'category_id' => 4,
             'model' => 'Z590 FTW',
-            'brand_id' => 20,
+            'brand_id' => 21,
             'price' => 299.99,
             'quantity' => 10,
             'featured' => true
@@ -375,7 +390,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'Durable motherboard with military-grade components',
             'category_id' => 4,
             'model' => 'TUF GAMING X570-PLUS',
-            'brand_id' => 12,
+            'brand_id' => 13,
             'price' => 189.99,
             'quantity' => 20,
             'featured' => true
@@ -405,7 +420,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'Reliable motherboard with advanced thermal solutions',
             'category_id' => 4,
             'model' => 'MAG B550 TOMAHAWK',
-            'brand_id' => 11,
+            'brand_id' => 12,
             'price' => 159.99,
             'quantity' => 25,
             'featured' => true
@@ -436,7 +451,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'Portable SSD with USB 3.2 Gen 2 interface',
             'category_id' => 5,
             'model' => 'MU-PC1T0T/AM',
-            'brand_id' => 31,
+            'brand_id' => 32,
             'price' => 109.99,
             'quantity' => 50,
             'featured' => true
@@ -456,7 +471,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'Durable and fast portable SSD',
             'category_id' => 5,
             'model' => 'SDSSDE61-1T00-G25',
-            'brand_id' => 51,
+            'brand_id' => 52,
             'price' => 129.99,
             'quantity' => 40,
             'featured' => true
@@ -476,7 +491,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'High-performance NVMe SSD for gaming',
             'category_id' => 5,
             'model' => 'WDS100T2X0E',
-            'brand_id' => 40,
+            'brand_id' => 41,
             'price' => 159.99,
             'quantity' => 30,
             'featured' => true
@@ -497,7 +512,7 @@ class DatabaseSeeder extends Seeder
             'description' => '1200W PSU with 80+ Platinum efficiency and modular cables',
             'category_id' => 6,
             'model' => 'HX1200',
-            'brand_id' => 1,
+            'brand_id' => 2,
             'price' => 249.99,
             'quantity' => 10,
             'featured' => true
@@ -516,7 +531,7 @@ class DatabaseSeeder extends Seeder
             'description' => '1000W PSU with 80+ Gold efficiency and semi-modular design',
             'category_id' => 6,
             'model' => '1000 GQ',
-            'brand_id' => 20,
+            'brand_id' => 21,
             'price' => 169.99,
             'quantity' => 15,
             'featured' => true
@@ -535,7 +550,7 @@ class DatabaseSeeder extends Seeder
             'description' => '750W PSU with 80+ Titanium efficiency and silent operation',
             'category_id' => 6,
             'model' => 'PRIME TX-750',
-            'brand_id' => 19,
+            'brand_id' => 20,
             'price' => 229.99,
             'quantity' => 20,
             'featured' => true
@@ -555,7 +570,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'Stylish and spacious mid-tower case with tempered glass',
             'category_id' => 7,
             'model' => 'PC-O11DX',
-            'brand_id' => 51,
+            'brand_id' => 52,
             'price' => 129.99,
             'quantity' => 15,
             'featured' => true
@@ -582,7 +597,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'Open-frame mid-tower case with panoramic viewing',
             'category_id' => 7,
             'model' => 'CA-1G4-00M1WN-00',
-            'brand_id' => 24,
+            'brand_id' => 25,
             'price' => 149.99,
             'quantity' => 10,
             'featured' => true
@@ -609,7 +624,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'Premium mid-tower case with dual system support',
             'category_id' => 7,
             'model' => 'PH-ES518XTG_DAG01',
-            'brand_id' => 52,
+            'brand_id' => 53,
             'price' => 199.99,
             'quantity' => 8,
             'featured' => true
@@ -637,7 +652,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'Compact and efficient air cooler for small builds',
             'category_id' => 8,
             'model' => 'NH-U12S Redux',
-            'brand_id' => 29,
+            'brand_id' => 30,
             'price' => 49.99,
             'quantity' => 20,
             'featured' => true
@@ -658,7 +673,7 @@ class DatabaseSeeder extends Seeder
             'description' => '360mm liquid cooler with RGB lighting and high performance',
             'category_id' => 8,
             'model' => 'CW-9060048-WW',
-            'brand_id' => 1,
+            'brand_id' => 2,
             'price' => 179.99,
             'quantity' => 15,
             'featured' => true
@@ -679,7 +694,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'Affordable and quiet air cooler for budget builds',
             'category_id' => 8,
             'model' => 'BK006',
-            'brand_id' => 21,
+            'brand_id' => 22,
             'price' => 39.99,
             'quantity' => 30,
             'featured' => false
@@ -701,7 +716,7 @@ class DatabaseSeeder extends Seeder
             'description' => '27-inch 4K UHD gaming monitor with 144Hz refresh rate',
             'category_id' => 9,
             'model' => 'X27',
-            'brand_id' => 34,
+            'brand_id' => 35,
             'price' => 1799.99,
             'quantity' => 5,
             'featured' => true
@@ -729,7 +744,7 @@ class DatabaseSeeder extends Seeder
             'description' => '38-inch UltraWide QHD+ gaming monitor with Nano IPS panel',
             'category_id' => 9,
             'model' => '38GN950-B',
-            'brand_id' => 32,
+            'brand_id' => 33,
             'price' => 1599.99,
             'quantity' => 8,
             'featured' => true
@@ -757,7 +772,7 @@ class DatabaseSeeder extends Seeder
             'description' => '32-inch 4K UHD monitor with smart features',
             'category_id' => 9,
             'model' => 'LS32AM702UNXZA',
-            'brand_id' => 31,
+            'brand_id' => 32,
             'price' => 399.99,
             'quantity' => 20,
             'featured' => false
@@ -786,7 +801,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'Compact 60% mechanical keyboard with RGB lighting',
             'category_id' => 10,
             'model' => 'DKON2061ST',
-            'brand_id' => 53,
+            'brand_id' => 54,
             'price' => 99.99,
             'quantity' => 20,
             'featured' => true
@@ -806,7 +821,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'Wireless mechanical keyboard with hot-swappable switches',
             'category_id' => 10,
             'model' => 'K6',
-            'brand_id' => 49,
+            'brand_id' => 50,
             'price' => 89.99,
             'quantity' => 25,
             'featured' => true
@@ -826,7 +841,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'Full-sized mechanical keyboard with Razer Green switches',
             'category_id' => 10,
             'model' => 'RZ03-03540100-R3U1',
-            'brand_id' => 46,
+            'brand_id' => 47,
             'price' => 139.99,
             'quantity' => 15,
             'featured' => true
@@ -847,7 +862,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'High-performance gaming mouse with HERO sensor',
             'category_id' => 11,
             'model' => '910-005469',
-            'brand_id' => 45,
+            'brand_id' => 46,
             'price' => 49.99,
             'quantity' => 30,
             'featured' => true
@@ -867,7 +882,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'Ergonomic gaming mouse with Focus+ Optical Sensor',
             'category_id' => 11,
             'model' => 'RZ01-03210100-R3U1',
-            'brand_id' => 46,
+            'brand_id' => 47,
             'price' => 69.99,
             'quantity' => 25,
             'featured' => true
@@ -887,7 +902,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'Dual sensor system for precise gaming performance',
             'category_id' => 11,
             'model' => '62446',
-            'brand_id' => 47,
+            'brand_id' => 48,
             'price' => 79.99,
             'quantity' => 20,
             'featured' => true

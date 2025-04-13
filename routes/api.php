@@ -24,7 +24,7 @@ Route::put('products/{id}', [ProductController::class, 'update'])->middleware(['
 Route::delete('products/{id}', [ProductController::class, 'destroy'])->middleware(['auth:sanctum', 'role:admin']);
 
 // Category routes
-Route::resource('categories', CategoryController::class)->middleware(['auth:sanctum', 'role:admin']);
+Route::resource('categories', CategoryController::class)->only(['index'])->middleware(['auth:sanctum', 'role:admin']);
 
 // Brand routes
 Route::resource('brands', BrandController::class)->middleware(['auth:sanctum', 'role:admin']);
