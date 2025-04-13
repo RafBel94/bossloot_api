@@ -48,6 +48,10 @@ class BrandController extends BaseController
 
     public function show($id)
     {
+        if ($id == 1) {
+            return $this->sendError("It's not possible to show the default brand", [], 403);
+        }
+
         $brand = Brand::find($id);
 
         if ($brand == null) {

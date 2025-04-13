@@ -120,6 +120,10 @@ class UserController extends BaseController
             return $this->sendError('User not found.');
         }
 
+        if ($user->role == 'admin') {
+            return $this->sendError('Unauthorized.', ['error' => 'You cannot view this user.']);
+        }
+
         return $this->sendResponse(new UserResource($user), 'User retrieved successfully.');
     }
 
@@ -208,6 +212,10 @@ class UserController extends BaseController
 
         if ($user == null) {
             return $this->sendError('User not found.');
+        }
+
+        if ($user->role == 'admin') {
+            return $this->sendError('Unauthorized.', ['error' => 'You cannot delete this user.']);
         }
 
         $user->delete();
