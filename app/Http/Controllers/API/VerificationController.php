@@ -18,22 +18,22 @@ class VerificationController extends BaseController
         $user = User::find($id);
 
         if (!$user) {
-            return redirect('http://localhost:4200/confirm_email/notfound');
+            return redirect('https://bossloot-web.vercel.app/confirm_email/notfound');
         }
 
         if (!URL::hasValidSignature($request)) {
-            return redirect('http://localhost:4200/confirm_email/invalid');
+            return redirect('https://bossloot-web.vercel.app/confirm_email/invalid');
         }
 
         if ($user->hasVerifiedEmail()) {
-            return redirect('http://localhost:4200/confirm_email/alver');
+            return redirect('https://bossloot-web.vercel.app/confirm_email/alver');
         }
 
         $user->email_confirmed = true;
         $user->email_verified_at = now();
         $user->save();
 
-        return redirect('http://localhost:4200/confirm_email/success');
+        return redirect('https://bossloot-web.vercel.app/confirm_email/success');
     }
 
     /**
