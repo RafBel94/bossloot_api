@@ -24,8 +24,14 @@ Route::put('products/{id}', [ProductController::class, 'update'])->middleware(['
 Route::delete('products/{id}', [ProductController::class, 'destroy'])->middleware(['auth:sanctum', 'role:admin']);
 
 // Category routes
-Route::resource('categories', CategoryController::class)->only(['index'])->middleware(['auth:sanctum', 'role:admin']);
+Route::resource('categories', CategoryController::class)->only(['index', 'show']);
+Route::post('categories', [CategoryController::class, 'store'])->middleware(['auth:sanctum', 'role:admin']);
+Route::put('categories/{id}', [CategoryController::class, 'update'])->middleware(['auth:sanctum', 'role:admin']);
+Route::delete('categories/{id}', [CategoryController::class, 'destroy'])->middleware(['auth:sanctum', 'role:admin']);
 
 // Brand routes
-Route::resource('brands', BrandController::class)->middleware(['auth:sanctum', 'role:admin']);
+Route::resource('brands', BrandController::class)->only(['index', 'show']);
+Route::post('brands', [BrandController::class, 'store'])->middleware(['auth:sanctum', 'role:admin']);
+Route::put('brands/{id}', [BrandController::class, 'update'])->middleware(['auth:sanctum', 'role:admin']);
+Route::delete('brands/{id}', [BrandController::class, 'destroy'])->middleware(['auth:sanctum', 'role:admin']);
 
