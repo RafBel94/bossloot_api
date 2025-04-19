@@ -4,23 +4,11 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\DetailedProductResource;
 use App\Http\Resources\SimpleProductResource;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
-use Illuminate\Http\Request;
 use App\Models\Product;
-use App\Models\RamSpec;
-use App\Models\GpuSpec;
-use App\Models\CpuSpec;
-use App\Models\CoolerSpec;
-use App\Models\CaseSpec;
-use App\Models\PsuSpec;
-use App\Models\MouseSpec;
-use App\Models\DisplaySpec;
-use App\Models\StorageSpec;
-use App\Models\KeyboardSpec;
-use App\Models\MotherboardSpec;
 
 class ProductController extends BaseController
 {
@@ -151,6 +139,20 @@ class ProductController extends BaseController
         }
 
         return $this->sendResponse(new ProductResource($product), 'Product retrieved successfully.');
+    }
+
+    /**
+     * Display the specified resource with specifications and named category and brand.
+     */
+    public function showDetailed(string $id)
+    {
+        $product = Product::with(['category', 'brand'])->find($id);
+
+        if ($product == null) {
+            return $this->sendError('Product not found.');
+        }
+
+        return $this->sendResponse(new DetailedProductResource($product), 'Product retrieved successfully.');
     }
 
     /**
