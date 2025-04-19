@@ -26,8 +26,8 @@ class DetailedProductResource extends JsonResource
             'featured' => $this->featured,
             'image' => $this->image,
             'points' => $this->points,
-            'category_id' => $this->whenLoaded('category', fn() => $this->category->name),
-            'brand_id' => $this->whenLoaded('brand', fn() => $this->brand->brand),
+            'category' => $this->whenLoaded('category', fn() => $this->category->name),
+            'brand' => $this->whenLoaded('brand', fn() => $this->brand->name),
             'specs' => $this->specs
         ];
     }
