@@ -154,6 +154,22 @@ class ProductController extends BaseController
     }
 
     /**
+     * Show products that are either featured or added in the last 7 days.
+     */
+    public function showFeatured()
+    {
+        $products = Product::with(['category', 'brand'])
+            ->where(function ($query) {
+                $query->where('featured', 1)
+                    ->orWhere('created_at', '>=', now()->subDays(7));
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return $this->sendResponse(SimpleProductResource::collection($products), 'Latest products retrieved successfully.');
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
@@ -276,7 +292,7 @@ class ProductController extends BaseController
     private function updateSpecificSpecs(int $categoryId, UpdateProductRequest $request, $specModel)
     {
         $fieldsToUpdate = self::SPEC_FIELDS_MAP[$categoryId] ?? null;
-        
+
         if ($fieldsToUpdate) {
             $data = $request->only($fieldsToUpdate);
 

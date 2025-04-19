@@ -19,6 +19,7 @@ Route::post('/resend-verification', [VerificationController::class, 'resendEmail
 
 // Product routes
 Route::resource('products', ProductController::class)->only(['index', 'show']);
+Route::get('products/featured', [ProductController::class, 'showFeatured'])->name('products.latest');
 Route::post('products', [ProductController::class, 'store'])->middleware(['auth:sanctum', 'role:admin']);
 Route::put('products/{id}', [ProductController::class, 'update'])->middleware(['auth:sanctum', 'role:admin']);
 Route::delete('products/{id}', [ProductController::class, 'destroy'])->middleware(['auth:sanctum', 'role:admin']);
