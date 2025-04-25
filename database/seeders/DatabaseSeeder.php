@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
+use App\Models\Valoration;
 use App\Models\RamSpec;
 use App\Models\GpuSpec;
 use App\Models\CpuSpec;
@@ -25,6 +26,29 @@ class DatabaseSeeder extends Seeder
      * Seed the application's database.
      */
     public function run(): void
+    {
+        // Users
+        $this->seedUsers();
+        
+        // Categories
+        $this->seedCategories();
+
+        // Brands
+        $this->seedBrands();
+
+        // Products
+        $this->seedProducts();
+
+        // Valorations
+        $this->seedValorations();
+    }
+
+    /**
+     * Seed the users table.
+     *
+     * @return void
+     */
+    private function seedUsers(): void
     {
         User::factory(30)->create(['role' => 'user']);
 
@@ -54,16 +78,13 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now()
         ]);
 
-        // Categories
-        $this->seedCategories();
-
-        // Brands
-        $this->seedBrands();
-
-        // Products
-        $this->seedProducts();
     }
 
+    /**
+     * Seed the categories table.
+     *
+     * @return void
+     */
     private function seedCategories(): void
     {
         $categories = [
@@ -85,6 +106,11 @@ class DatabaseSeeder extends Seeder
         }
     }
 
+    /**
+     * Seed the brands table.
+     *
+     * @return void
+     */
     private function seedBrands(): void
     {
         $brands = [
@@ -163,6 +189,11 @@ class DatabaseSeeder extends Seeder
         }
     }
 
+    /**
+     * Seed the products table.
+     *
+     * @return void
+     */
     private function seedProducts(): void
     {
         // RAM Products
@@ -975,5 +1006,29 @@ class DatabaseSeeder extends Seeder
                 'weight' => 96,
             ]);
         });
+    }
+
+    /**
+     * Seed the valorations table.
+     *
+     * @return void
+     */
+    private function seedValorations(): void
+    {
+        // Get all products and users
+        $products = Product::all();
+        $users = User::all();
+
+        for ($i = 0; $i < 60; $i++) {
+            Valoration::factory()->create([
+                'user_id' => $users->random()->id,
+                'product_id' => $products->random()->id,
+                'rating' => rand(1, 5),
+                'comment' => fake()->optional()->sentence(),
+                'likes' => rand(0, 100),
+                'dislikes' => rand(0, 50),
+                'image' => 'https://res.cloudinary.com/dlmbw4who/image/upload/v1743097241/product-placeholder_jcgqx4.png',
+            ]);
+        }
     }
 }

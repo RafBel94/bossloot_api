@@ -9,6 +9,7 @@ use App\Http\Resources\SimpleProductResource;
 use Illuminate\Support\Facades\DB;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use App\Models\Product;
+use App\Models\Category;
 
 class ProductController extends BaseController
 {
@@ -146,7 +147,7 @@ class ProductController extends BaseController
      */
     public function showDetailed(string $id)
     {
-        $product = Product::with(['category', 'brand'])->find($id);
+        $product = Product::with(['category', 'brand', 'valorations'])->find($id);
 
         if ($product == null) {
             return $this->sendError('Product not found.');

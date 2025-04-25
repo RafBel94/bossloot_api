@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\BrandController;
+use App\Http\Controllers\API\ValorationController;
 
 // User routes
 Route::resource('users', UserController::class)->except(['store'])->middleware(['auth:sanctum', 'role:admin']);
@@ -37,3 +38,8 @@ Route::post('brands', [BrandController::class, 'store'])->middleware(['auth:sanc
 Route::put('brands/{id}', [BrandController::class, 'update'])->middleware(['auth:sanctum', 'role:admin']);
 Route::delete('brands/{id}', [BrandController::class, 'destroy'])->middleware(['auth:sanctum', 'role:admin']);
 
+// Valoration routes
+Route::resource('valorations', ValorationController::class)->only(['index', 'show']);
+Route::post('valorations', [ValorationController::class, 'store'])->middleware(['auth:sanctum']);
+Route::put('valorations/{id}', [ValorationController::class, 'update'])->middleware(['auth:sanctum']);
+Route::delete('valorations/{id}', [ValorationController::class, 'destroy'])->middleware(['auth:sanctum']);

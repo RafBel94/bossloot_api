@@ -110,4 +110,29 @@ class Product extends Model
     {
         return $this->hasOne(MouseSpec::class);
     }
+
+    public function valorations()
+    {
+        return $this->hasMany(Valoration::class);
+    }
+
+    public function getAverageRatingAttribute()
+    {
+        return $this->valorations()->avg('rating') ?? 0;
+    }
+
+    public function getTotalLikesAttribute()
+    {
+        return $this->valorations()->sum('likes') ?? 0;
+    }
+
+    public function getTotalDislikesAttribute()
+    {
+        return $this->valorations()->sum('dislikes') ?? 0;
+    }
+
+    public function getTotalValorationsAttribute()
+    {
+        return $this->valorations()->count() ?? 0;
+    }
 }

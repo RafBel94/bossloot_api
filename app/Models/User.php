@@ -85,4 +85,10 @@ class User extends Authenticatable
             logger().info('Failed to send verification email to user ID ' . $this->id . ': ' . $e->getMessage());
         }
     }
+
+    // Get all valorations that the user has made
+    public function valorations()
+    {
+        return $this->hasMany(Valoration::class);
+    }
 }
