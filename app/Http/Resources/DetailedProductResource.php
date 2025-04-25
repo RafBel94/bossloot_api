@@ -29,8 +29,8 @@ class DetailedProductResource extends JsonResource
             'category' => $this->whenLoaded('category', fn() => $this->category->name),
             'brand' => $this->whenLoaded('brand', fn() => $this->brand->name),
             'specs' => $this->specs,
-            'avg_rating' => $this->getAverageRatingAttribute,
-            'valorations' => $this->valorations
+            'valorations' => $this->valorations,
+            'avg_rating' => $this->averageRating()
         ];
     }
 }

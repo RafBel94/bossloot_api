@@ -116,22 +116,22 @@ class Product extends Model
         return $this->hasMany(Valoration::class);
     }
 
-    public function getAverageRatingAttribute()
+    public function averageRating(): float
     {
         return $this->valorations()->avg('rating') ?? 0;
     }
 
-    public function getTotalLikesAttribute()
+    public function totalLikes()
     {
         return $this->valorations()->sum('likes') ?? 0;
     }
 
-    public function getTotalDislikesAttribute()
+    public function totalDislikes()
     {
         return $this->valorations()->sum('dislikes') ?? 0;
     }
 
-    public function getTotalValorationsAttribute()
+    public function totalValorationCount()
     {
         return $this->valorations()->count() ?? 0;
     }
