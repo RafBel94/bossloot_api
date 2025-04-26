@@ -24,7 +24,15 @@ class ValorationResource extends JsonResource
             'dislikes' => $this->dislikes,
             'image' => $this->image,
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
+            'updated_at' => $this->updated_at,
+            'user' => $this->whenLoaded('user', function () {
+                return [
+                    'id' => $this->user->id,
+                    'name' => $this->user->name,
+                    'image' => $this->user->image,
+                    'level' => $this->user->level,
+                ];
+            }),
         ];
     }
 }

@@ -133,7 +133,7 @@ class ProductController extends BaseController
      */
     public function show(string $id)
     {
-        $product = Product::with(['category', 'brand'])->find($id);
+        $product = Product::with(['category', 'brand', 'valorations.user'])->find($id);
 
         if ($product == null) {
             return $this->sendError('Product not found.');
