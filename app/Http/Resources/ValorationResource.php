@@ -20,8 +20,6 @@ class ValorationResource extends JsonResource
             'product_id' => $this->product_id,
             'rating' => $this->rating,
             'comment' => $this->comment,
-            'likes' => $this->likes,
-            'dislikes' => $this->dislikes,
             'image' => $this->image,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

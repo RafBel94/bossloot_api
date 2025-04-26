@@ -55,8 +55,6 @@ class ValorationController extends BaseController
                 'product_id' => $request->product_id,
                 'rating' => $request->rating,
                 'comment' => $request->comment,
-                'likes' => 0,
-                'dislikes' => 0,
                 'image' => $imageUrl,
             ]);
 

@@ -28,8 +28,6 @@ class ValorationRequest extends FormRequest
             'product_id' => 'required|exists:products,id',
             'rating' => 'required|integer|min:1|max:5',
             'comment' => 'nullable|string|max:255',
-            'likes' => 'nullable|integer|min:0',
-            'dislikes' => 'nullable|integer|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }

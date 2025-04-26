@@ -14,8 +14,6 @@ class Valoration extends Model
         'product_id',
         'rating',
         'comment',
-        'likes',
-        'dislikes',
         'image'
     ];
 
