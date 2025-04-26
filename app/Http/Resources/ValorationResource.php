@@ -29,7 +29,7 @@ class ValorationResource extends JsonResource
                 return [
                     'id' => $this->user->id,
                     'name' => $this->user->name,
-                    'image' => $this->user->image,
+                    'profile_picture' => $this->user->profile_picture,
                     'level' => $this->user->level,
                 ];
             }),
