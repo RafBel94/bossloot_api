@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Requests\UpdateProfileRequest;
 
 
 class UserController extends BaseController
@@ -167,6 +168,43 @@ class UserController extends BaseController
         });
 
         return $this->sendResponse(new UserResource($user), 'User updated successfully.');
+    }
+
+    /**
+     * Update the user profile.
+     */
+    public function updateProfile(UpdateProfileRequest $request, String $id)
+    {
+        try {
+            $user = USER::find($id);
+
+            DB::transaction(function () use ($request, $user) {
+                if ($request->hasFile('profile_picture')) {
+                    $this->deleteOldProfilePicture($user->profile_picture);
+
+                    $user->profile_picture = Cloudinary::upload(
+                        $request->file('profile_picture')->getRealPath(),
+                        [
+                            'folder' => 'bossloot/user-images',
+                        ]
+                    )->getSecurePath();
+                }
+
+                // Update fields - Laravel automatically handles null values for fields not present
+                $user->fill([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'mobile_phone' => $request->mobile_phone,
+                    'address_1' => $request->adress_1,
+                    'address_2' => $request->adress_2,
+                ])->save();
+            });
+
+            return $this->sendResponse(new UserResource($user), 'User profile updated successfully.');
+        } catch (\Exception $e) {
+            logger()->error('Error updating user profile: ' . $e->getMessage());
+            return $this->sendError('Error updating profile.', ['error' => $e->getMessage()]);
+        }
     }
 
     /**

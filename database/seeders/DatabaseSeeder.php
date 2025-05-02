@@ -1025,7 +1025,7 @@ class DatabaseSeeder extends Seeder
                 'product_id' => $products->random()->id,
                 'rating' => rand(1, 5),
                 'comment' => fake()->optional()->sentence(20),
-                'image' => 'https://res.cloudinary.com/dlmbw4who/image/upload/v1743097241/product-placeholder_jcgqx4.png',
+                'image' => rand(0, 1) ? 'https://res.cloudinary.com/dlmbw4who/image/upload/v1743097241/product-placeholder_jcgqx4.png' : null,
             ]);
         }
     }
