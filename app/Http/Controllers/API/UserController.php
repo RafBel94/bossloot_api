@@ -141,6 +141,7 @@ class UserController extends BaseController
      */
     public function update(UpdateUserRequest $request, User $user)
     {
+        logger()->info('Entered update method.');
         DB::transaction(function () use ($request, $user) {
             if ($request->hasFile('profile_picture')) {
                 $this->deleteOldProfilePicture($user->profile_picture);
@@ -176,6 +177,7 @@ class UserController extends BaseController
     public function updateProfile(UpdateProfileRequest $request, String $id)
     {
         try {
+            logger()->info('Entered updateProfile method.');
             $user = USER::find($id);
 
             DB::transaction(function () use ($request, $user) {
