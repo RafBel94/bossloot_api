@@ -196,8 +196,8 @@ class UserController extends BaseController
                 $user->fill([
                     'name' => $request->name,
                     'mobile_phone' => $request->mobile_phone,
-                    'address_1' => $request->adress_1,
-                    'address_2' => $request->adress_2,
+                    'adress_1' => $request->address_1,
+                    'adress_2' => $request->address_2,
                 ])->save();
             });
 
