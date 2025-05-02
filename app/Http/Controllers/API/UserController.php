@@ -195,7 +195,6 @@ class UserController extends BaseController
                 // Update fields - Laravel automatically handles null values for fields not present
                 $user->fill([
                     'name' => $request->name,
-                    'email' => $request->email,
                     'mobile_phone' => $request->mobile_phone,
                     'address_1' => $request->adress_1,
                     'address_2' => $request->adress_2,
