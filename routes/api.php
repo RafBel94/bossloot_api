@@ -7,6 +7,7 @@ use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\BrandController;
 use App\Http\Controllers\API\ValorationController;
+use App\Http\Controllers\API\FavoriteController;
 
 // User routes
 Route::post('users/update-profile/{id}', [UserController::class, 'updateProfile'])->middleware(['auth:sanctum']);
@@ -44,3 +45,9 @@ Route::resource('valorations', ValorationController::class)->only(['index', 'sho
 Route::post('valorations', [ValorationController::class, 'store'])->middleware(['auth:sanctum']);
 Route::put('valorations/{id}', [ValorationController::class, 'update'])->middleware(['auth:sanctum']);
 Route::delete('valorations/{id}', [ValorationController::class, 'destroy'])->middleware(['auth:sanctum']);
+
+// Favorite routes
+Route::get('favorites/user-favorites/{id}', [FavoriteController::class, 'getUserFavorites'])->middleware(['auth:sanctum']);
+Route::get('favorites/show/{userId}/{productId}', [FavoriteController::class, 'show'])->middleware(['auth:sanctum']);
+Route::delete('favorites/delete/{userId}/{productId}', [FavoriteController::class, 'destroy'])->middleware(['auth:sanctum']);
+Route::post('favorites/store', [FavoriteController::class, 'store'])->middleware(['auth:sanctum']);

@@ -91,4 +91,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Valoration::class);
     }
+
+    // Get all favorites that the user has made
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
 }
