@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Contact Form Submission</title>
+    <title>Response to Your Contact Form</title>
     <style>
         /* Base styles */
         body {
@@ -38,16 +38,6 @@
             font-weight: 600;
         }
         
-        .notification-badge {
-            background-color: #ff4757;
-            color: white;
-            font-size: 14px;
-            padding: 5px 10px;
-            border-radius: 30px;
-            margin-top: 10px;
-            display: inline-block;
-        }
-        
         /* Content styles */
         .email-body {
             padding: 30px;
@@ -61,7 +51,18 @@
             border-radius: 0 4px 4px 0;
         }
         
-        .message-container {
+        .section-header {
+            background-color: #f0f0f0;
+            padding: 10px 15px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #444;
+            border-left: 4px solid #6c5ce7;
+        }
+        
+        .message-details {
             background-color: #f8f9fa;
             border: 1px solid #e9ecef;
             border-radius: 4px;
@@ -69,23 +70,8 @@
             margin-bottom: 20px;
         }
         
-        .message-field {
-            margin-bottom: 15px;
-            border-bottom: 1px dashed #e9ecef;
-            padding-bottom: 10px;
-        }
-        
-        .message-field:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-            margin-bottom: 0;
-        }
-        
-        .field-label {
-            font-weight: 600;
-            color: #6c5ce7;
-            display: block;
-            margin-bottom: 5px;
+        .message-details p {
+            margin: 10px 0;
         }
         
         .message-content {
@@ -93,40 +79,29 @@
             border: 1px solid #e9ecef;
             border-radius: 4px;
             padding: 15px;
-            margin-top: 5px;
+            margin-top: 10px;
+        }
+        
+        .reply-box {
+            background-color: #e8f4fd;
+            border: 1px solid #bee5eb;
+            border-radius: 4px;
+            padding: 20px;
+            margin: 25px 0;
         }
         
         /* Image styles */
         .image-container {
             text-align: center;
             margin: 20px 0;
-            background-color: #fff;
-            padding: 10px;
-            border-radius: 4px;
-            border: 1px solid #e9ecef;
         }
         
         .attached-image {
             max-width: 100%;
             max-height: 300px;
             border-radius: 6px;
+            border: 1px solid #ddd;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        
-        /* Action button */
-        .action-container {
-            text-align: center;
-            margin: 30px 0;
-        }
-        
-        .action-button {
-            background-color: #6c5ce7;
-            color: white;
-            padding: 12px 25px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-weight: 600;
-            display: inline-block;
         }
         
         /* Footer styles */
@@ -139,10 +114,12 @@
             border-top: 1px solid #e9ecef;
         }
         
-        .timestamp {
-            color: #999;
-            font-size: 11px;
-            margin-top: 10px;
+        .disclaimer {
+            padding: 10px;
+            border: 1px dashed #ccc;
+            margin-top: 15px;
+            border-radius: 4px;
+            background-color: #fff;
         }
         
         /* Responsive adjustments */
@@ -162,48 +139,53 @@
 <body>
     <div class="container">
         <div class="email-header">
-            <h1>New Contact Form Submission</h1>
-            <div class="notification-badge">Requires Attention</div>
+            <h1>We've Responded to Your Inquiry</h1>
         </div>
         
         <div class="email-body">
             <div class="intro">
-                <p>A new contact form message has been submitted through the application. Please review the details below.</p>
+                <p>Hello {{ $name }},</p>
+                <p>Thank you for contacting us. An administrator has reviewed your message and provided a response below.</p>
             </div>
             
-            <div class="message-container">
-                <div class="message-field">
-                    <span class="field-label">From:</span>
-                    {{ $name }} <span style="color: #666;">&lt;{{ $email }}&gt;</span>
-                </div>
+            <div class="section-header">
+                Your Original Message
+            </div>
+            
+            <div class="message-details">
+                <p><strong>From:</strong> {{ $name }} ({{ $email }})</p>
+                <p><strong>Subject:</strong> {{ $subject }}</p>
+                <p><strong>Sent:</strong> {{ date('F j, Y, g:i a') }}</p>
                 
-                <div class="message-field">
-                    <span class="field-label">Subject:</span>
-                    {{ $subject }}
-                </div>
-                
-                <div class="message-field">
-                    <span class="field-label">Message:</span>
-                    <div class="message-content">
-                        {{ $messageContent }}
-                    </div>
+                <p><strong>Message:</strong></p>
+                <div class="message-content">
+                    {{ $messageContent }}
                 </div>
                 
                 @if($imageUrl)
-                <div class="message-field">
-                    <span class="field-label">Attached Image:</span>
-                    <div class="image-container">
-                        <img src="{{ $imageUrl }}" alt="Attached image" class="attached-image">
-                    </div>
+                <div class="image-container">
+                    <p><strong>Attached Image:</strong></p>
+                    <img src="{{ $imageUrl }}" alt="Attached image" class="attached-image">
                 </div>
                 @endif
             </div>
+            
+            <div class="section-header">
+                Our Response
+            </div>
+            
+            <div class="reply-box">
+                {{ $answer }}
+            </div>
+            
+            <p>If you need any further assistance, please don't hesitate to contact us again through the application.</p>
         </div>
         
         <div class="email-footer">
-            <p>&copy; {{ date('Y') }} BossLoot | Admin Notification</p>
-            <div class="timestamp">
-                Received on: {{ date('F j, Y, g:i a') }}
+            <p>&copy; {{ date('Y') }} BossLoot | All Rights Reserved</p>
+            
+            <div class="disclaimer">
+                <p>This is an automated message. Please do not reply directly to this email. If you have additional questions, please submit a new contact form through our application.</p>
             </div>
         </div>
     </div>

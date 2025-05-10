@@ -57,5 +57,5 @@ Route::post('favorites/store', [FavoriteController::class, 'store'])->middleware
 Route::post('contact', [ContactController::class, 'sendContactForm']);
 Route::get('contact-forms', [ContactController::class, 'index'])->middleware(['auth:sanctum', 'role:admin']);
 Route::get('contact-forms/{id}', [ContactController::class, 'show'])->middleware(['auth:sanctum', 'role:admin']);
-Route::put('contact-forms/{id}/status', [ContactController::class, 'updateStatus'])->middleware(['auth:sanctum', 'role:admin']);
+Route::put('contact-forms/{id}/resolve', [ContactController::class, 'resolve'])->middleware(['auth:sanctum', 'role:admin']);
 Route::delete('contact-forms/{id}', [ContactController::class, 'destroy'])->middleware(['auth:sanctum', 'role:admin']);

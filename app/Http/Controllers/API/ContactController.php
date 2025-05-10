@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Requests\ContactFormRequest;
+use App\Http\Requests\ResolveContactFormRequest;
+use App\Mail\ResolveContactFormMail;
 use DB;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Mail;
@@ -79,26 +81,57 @@ class ContactController extends BaseController
     }
 
     /**
+     * Get a specific contact form by ID (for admin).
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id): JsonResponse
+    {
+        try {
+            $contactForm = ContactForm::findOrFail($id);
+            return $this->sendResponse($contactForm, 'Contact form retrieved successfully.');
+        } catch (\Exception $e) {
+            return $this->sendError('Error retrieving contact form: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Update the status of a contact form.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function updateStatus(Request $request, $id): JsonResponse
+    public function resolve(ResolveContactFormRequest $request, $id): JsonResponse
     {
         try {
-            $request->validate([
-                'status' => 'required|string|in:pending,answered'
-            ]);
             
+            DB::beginTransaction();
+
             $contactForm = ContactForm::findOrFail($id);
-            $contactForm->status = $request->status;
+            $contactForm->status = ContactForm::STATUS_RESOLVED;
+            $contactForm->answer = $request->answer;
             $contactForm->save();
-            
-            return $this->sendResponse($contactForm, 'Contact form status updated successfully.');
+
+            $contactData = [
+                'name' => $contactForm->name,
+                'email' => $contactForm->email,
+                'subject' => $contactForm->subject,
+                'message' => $contactForm->message,
+                'image' => $contactForm->image_url,
+                'answer' => $request->answer,
+            ];
+
+            Mail::to($contactForm->email)
+                ->send(new ResolveContactFormMail($contactData, $contactData['image']));
+
+            DB::commit();
+            return $this->sendResponse($contactForm, 'Contact form status and answer updated successfully.');
         } catch (\Exception $e) {
-            return $this->sendError('Error updating contact form: ' . $e->getMessage());
+            DB::rollBack();
+            logger()->error('Error resolving contact form: ' . $e->getMessage());
+            return $this->sendError('Error resolving contact form: ' . $e->getMessage());
         }
     }
     
@@ -108,7 +141,7 @@ class ContactController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id): Response
+    public function destroy($id): JsonResponse
     {
         try {
             $contactForm = ContactForm::findOrFail($id);
