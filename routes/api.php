@@ -8,6 +8,7 @@ use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\BrandController;
 use App\Http\Controllers\API\ValorationController;
 use App\Http\Controllers\API\FavoriteController;
+use App\Http\Controllers\API\ContactController;
 
 // User routes
 Route::post('users/update-profile/{id}', [UserController::class, 'updateProfile'])->middleware(['auth:sanctum']);
@@ -51,3 +52,10 @@ Route::get('favorites/user-favorites/{id}', [FavoriteController::class, 'getUser
 Route::get('favorites/show/{userId}/{productId}', [FavoriteController::class, 'show'])->middleware(['auth:sanctum']);
 Route::delete('favorites/delete/{userId}/{productId}', [FavoriteController::class, 'destroy'])->middleware(['auth:sanctum']);
 Route::post('favorites/store', [FavoriteController::class, 'store'])->middleware(['auth:sanctum']);
+
+// Contact routes
+Route::post('contact', [ContactController::class, 'sendContactForm']);
+Route::get('contact-forms', [ContactController::class, 'index'])->middleware(['auth:sanctum', 'role:admin']);
+Route::get('contact-forms/{id}', [ContactController::class, 'show'])->middleware(['auth:sanctum', 'role:admin']);
+Route::put('contact-forms/{id}/status', [ContactController::class, 'updateStatus'])->middleware(['auth:sanctum', 'role:admin']);
+Route::delete('contact-forms/{id}', [ContactController::class, 'destroy'])->middleware(['auth:sanctum', 'role:admin']);
