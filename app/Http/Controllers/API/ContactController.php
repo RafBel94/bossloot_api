@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Requests\ContactFormRequest;
 use DB;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Mail;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\Response;
@@ -19,7 +20,7 @@ class ContactController extends BaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function sendContactForm(ContactFormRequest $request): Response
+    public function sendContactForm(ContactFormRequest $request): JsonResponse
     {
         try {
             DB::beginTransaction();
@@ -41,7 +42,7 @@ class ContactController extends BaseController
                     ]
                 )->getSecurePath();
                 
-                $contactData['image_url'] = $imageUrl;
+                $contactData['image'] = $imageUrl;
                 $contactData['hasAttachment'] = true; // Attach the image to the mail
             }
 
@@ -50,7 +51,7 @@ class ContactController extends BaseController
 
             // Send the email
             Mail::to('rafael.beltrancaceres@gmail.com')
-                ->send(new ContactFormMail($contactData, $contactData['image_url'] ?? null));
+                ->send(new ContactFormMail($contactData, $contactData['image'] ?? null));
 
             DB::commit();
 
@@ -67,7 +68,7 @@ class ContactController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(): Response
+    public function index(): JsonResponse
     {
         try {
             $contactForms = ContactForm::latest()->get();
@@ -84,7 +85,7 @@ class ContactController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function updateStatus(Request $request, $id): Response
+    public function updateStatus(Request $request, $id): JsonResponse
     {
         try {
             $request->validate([

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email');
             $table->string('subject');
             $table->text('message');
-            $table->string('image_url')->nullable();
+            $table->string('image')->nullable();
             $table->string('status')->default('pending');
             $table->timestamps();
         });
