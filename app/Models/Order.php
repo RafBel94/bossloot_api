@@ -56,8 +56,9 @@ class Order extends Model
         }
         
         // Mark the cart as processed
-        $cart->status = 'processed';
-        $cart->save();
+        // NOW THIS IS HANDLED IN THE capturePayment() method of PayPalController
+        // $cart->status = 'processed';
+        // $cart->save();
         
         return $order;
     }

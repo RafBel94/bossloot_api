@@ -16,6 +16,7 @@ class CartController extends BaseController
     {
         try {
             $cart = $this->getOrCreateCart();
+            $cart->load('items.product');
             return $this->sendResponse($cart, 'Cart retrieved successfully.');
         } catch (\Exception $e) {
             Log::error('Error retrieving cart: ' . $e->getMessage());
@@ -37,6 +38,7 @@ class CartController extends BaseController
             
             $cart = $this->getOrCreateCart();
             $product = Product::findOrFail($request->product_id);
+            $productPriceWithDiscount = $product->price - ($product->price * ($product->discount / 100));
             
             // Verify if the product is already in the cart
             $cartItem = CartItem::where('cart_id', $cart->id)
@@ -53,8 +55,8 @@ class CartController extends BaseController
                 $cartItem->cart_id = $cart->id;
                 $cartItem->product_id = $product->id;
                 $cartItem->quantity = $request->quantity;
-                $cartItem->unit_price = $product->price;
-                $cartItem->total_price = $product->price * $request->quantity;
+                $cartItem->unit_price = $productPriceWithDiscount;
+                $cartItem->total_price = $productPriceWithDiscount * $request->quantity;
                 $cartItem->save();
             }
             
@@ -90,6 +92,7 @@ class CartController extends BaseController
             $cartItem->quantity = $request->quantity;
             $cartItem->updateTotalPrice();
             $cart->updateTotal();
+            $cart->load('items.product');
             
             DB::commit();
             
@@ -114,6 +117,7 @@ class CartController extends BaseController
                 
             $cartItem->delete();
             $cart->updateTotal();
+            $cart->load('items.product');
 
             DB::commit();
             
@@ -134,6 +138,7 @@ class CartController extends BaseController
             $cart = $this->getOrCreateCart();
             $cart->items()->delete();
             $cart->updateTotal();
+            $cart->load('items.product');
 
             DB::commit();
             
@@ -152,16 +157,20 @@ class CartController extends BaseController
             DB::beginTransaction();
 
             $userId = Auth::id();
-            
+            Log::info('Getting cart for user: ' . $userId);
+
             $cart = Cart::where('user_id', $userId)
                 ->where('status', 'active')
                 ->first();
                 
             if (!$cart) {
+                Log::info('Creating new cart for user: ' . $userId);
                 $cart = new Cart();
                 $cart->user_id = $userId;
                 $cart->status = 'active';
                 $cart->save();
+            } else {
+                Log::info('Existing cart found with ID: ' . $cart->id);
             }
 
             DB::commit();
@@ -170,7 +179,7 @@ class CartController extends BaseController
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error getting or creating cart: ' . $e->getMessage());
-            throw $e; // Rethrow the exception to be handled by the calling method
+            throw $e;
         }
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Order;
+use App\Models\Cart;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -94,14 +95,22 @@ class PayPalController extends BaseController
 
             $orderId = $request->input('order_id');
             
+            // Log the PayPal order ID for debugging
+            Log::info('Attempting to capture PayPal payment for order: ' . $orderId);
+            
             // Obtain the access token
             $accessToken = $this->getAccessToken();
             
-            // Capture the payment using the PayPal API
+            // CAMBIO AQUÍ: Usar withBody('', 'application/json') para enviar un cuerpo vacío explícitamente
             $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-                'Authorization' => "Bearer {$accessToken}"
-            ])->post("{$this->baseUrl}/v2/checkout/orders/{$orderId}/capture");
+                    'Content-Type' => 'application/json',
+                    'Authorization' => "Bearer {$accessToken}"
+                ])
+                ->withBody('', 'application/json') // Cuerpo vacío explícito
+                ->post("{$this->baseUrl}/v2/checkout/orders/{$orderId}/capture");
+            
+            // Log the response for debugging
+            Log::info('PayPal capture response: ' . $response->body());
             
             // Verify that the response was successful
             if (!$response->successful()) {
@@ -121,6 +130,14 @@ class PayPalController extends BaseController
             if (isset($captureData['status']) && $captureData['status'] === 'COMPLETED') {
                 $order->status = 'paid';
                 $order->save();
+
+                if ($order->cart_id) {
+                    $cart = Cart::find($order->cart_id);
+                    if ($cart) {
+                        $cart->status = 'processed';
+                        $cart->save();
+                    }
+                }
 
                 DB::commit();
                 

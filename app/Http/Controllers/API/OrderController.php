@@ -44,48 +44,49 @@ class OrderController extends BaseController
     
     // Method to create an order from the cart
     public function checkout()
-    {
-        try {
-            DB::beginTransaction();
+{
+    try {
+        DB::beginTransaction();
 
-            $cart = Cart::where('user_id', Auth::id())
-                ->where('status', 'active')
-                ->with('items.product')
-                ->firstOrFail();
-                
-            if ($cart->items->isEmpty()) {
-                DB::rollBack();
-                return $this->sendError('Cart is empty', ['The cart is empty'], 400);
-            }
-            
-            // Crear la orden a partir del carrito
-            $order = Order::createFromCart($cart);
-            
-            // ------ Integration of the frontend with PayPal ------
-            $order = Order::createFromCart($cart);
-            $order->status = 'pending_payment'; // Asegúrate que este es el estado inicial correcto
-            $order->save();
-
-            DB::commit();
-
-            // Return the order details and the next step for payment
-            // The frontend must handle the payment process through the 'next_step' generated URL (/paypal/create-order/{orderId})
-            return $this->sendResponse([
-                'order' => $order->load('items'),
-                'next_step' => [
-                    'action' => 'initiate_payment',
-                    'paypal_url' => route('api.paypal.create-order', ['orderId' => $order->id])
-                ]
-            ], 'Order created successfully. Ready for payment.');
+        // Usar first() en lugar de firstOrFail()
+        $cart = Cart::where('user_id', Auth::id())
+            ->where('status', 'active')
+            ->with('items.product')
+            ->first();
         
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        // Verificar manualmente si existe el carrito
+        if (!$cart) {
             DB::rollBack();
-            Log::error('Cart not found: ' . $e->getMessage());
-            return $this->sendError('Cart not found', ['Failed to find cart: ' . $e->getMessage()], 404);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Error creating order: ' . $e->getMessage());
-            return $this->sendError('Error creating order', ['Failed to create order: ' . $e->getMessage()], 500);
+            return $this->sendError('Cart not found', ['No active cart found for this user'], 404);
         }
+        
+        if ($cart->items->isEmpty()) {
+            DB::rollBack();
+            return $this->sendError('Cart is empty', ['The cart is empty'], 400);
+        }
+        
+        // Crear la orden una sola vez
+        $order = Order::createFromCart($cart);
+        $order->status = 'pending_payment';
+        $order->save();
+
+        DB::commit();
+
+        // Usar URL absoluta en lugar de route() para evitar errores
+        $paypalUrl = url("/api/paypal/create-order/{$order->id}");
+
+        return $this->sendResponse([
+            'order' => $order->load('items'),
+            'next_step' => [
+                'action' => 'initiate_payment',
+                'paypal_url' => $paypalUrl
+            ]
+        ], 'Order created successfully. Ready for payment.');
+        
+    } catch (\Exception $e) {
+        DB::rollBack();
+        Log::error('Error creating order: ' . $e->getMessage());
+        return $this->sendError('Error creating order', ['Failed to create order: ' . $e->getMessage()], 500);
     }
+}
 }

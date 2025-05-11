@@ -78,8 +78,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/checkout', [OrderController::class, 'checkout']);
     
     // PayPal
-    Route::post('/paypal/create-order/{orderId}', [PayPalController::class, 'createOrder']);
-    Route::post('/paypal/capture-payment', [PayPalController::class, 'capturePayment']);
+    Route::post('/paypal/create-order/{orderId}', [PayPalController::class, 'createOrder'])->name('api.paypal.create-order');;
+    Route::post('/paypal/capture-payment', [PayPalController::class, 'capturePayment'])->name('api.paypal.capture-payment');
 });
 
 // Public paypal routes
