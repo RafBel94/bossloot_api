@@ -87,6 +87,8 @@ class UserController extends BaseController
                 return $this->sendError('Unauthorized.', ['error' => 'User not activated. Please contact an admin.']);
             } else if ($user->email_confirmed == 0) {
                 return $this->sendError('Unauthorized.', ['error' => 'Please confirm your email before logging in.']);
+            } else if ($user->role == 'admin') {
+                return $this->sendError('Unauthorized.', ['error' => 'You cannot login as an admin.']);
             }
 
             $data['id'] = $user->id;
