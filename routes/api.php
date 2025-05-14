@@ -9,6 +9,9 @@ use App\Http\Controllers\API\BrandController;
 use App\Http\Controllers\API\ValorationController;
 use App\Http\Controllers\API\FavoriteController;
 use App\Http\Controllers\API\ContactController;
+use App\Http\Controllers\API\CartController;
+use App\Http\Controllers\API\OrderController;
+use App\Http\Controllers\API\PayPalController;
 
 // User routes
 Route::post('users/update-profile/{id}', [UserController::class, 'updateProfile'])->middleware(['auth:sanctum']);
@@ -59,3 +62,26 @@ Route::get('contact-forms', [ContactController::class, 'index'])->middleware(['a
 Route::get('contact-forms/{id}', [ContactController::class, 'show'])->middleware(['auth:sanctum', 'role:admin']);
 Route::put('contact-forms/{id}/resolve', [ContactController::class, 'resolve'])->middleware(['auth:sanctum', 'role:admin']);
 Route::delete('contact-forms/{id}', [ContactController::class, 'destroy'])->middleware(['auth:sanctum', 'role:admin']);
+
+// Cart, orders and paypal routes
+Route::middleware('auth:sanctum')->group(function () {
+    // Carrito
+    Route::get('/cart', [CartController::class, 'index']);
+    Route::post('/cart/items', [CartController::class, 'addItem']);
+    Route::put('/cart/items/{itemId}', [CartController::class, 'updateItem']);
+    Route::delete('/cart/items/{itemId}', [CartController::class, 'removeItem']);
+    Route::delete('/cart', [CartController::class, 'clear']);
+    
+    // Órdenes
+    Route::get('/orders', [OrderController::class, 'index']);
+    Route::get('/orders/{id}', [OrderController::class, 'show']);
+    Route::post('/checkout', [OrderController::class, 'checkout']);
+    
+    // PayPal
+    Route::post('/paypal/create-order/{orderId}', [PayPalController::class, 'createOrder'])->name('api.paypal.create-order');;
+    Route::post('/paypal/capture-payment', [PayPalController::class, 'capturePayment'])->name('api.paypal.capture-payment');
+});
+
+// Public paypal routes
+Route::get('/paypal/success', [PayPalController::class, 'success'])->name('paypal.success');
+Route::get('/paypal/cancel', [PayPalController::class, 'cancel'])->name('paypal.cancel');
