@@ -33,10 +33,18 @@ class CartController extends BaseController
             // Validate the request
             $request->validate([
                 'product_id' => 'required|exists:products,id',
-                'quantity' => 'required|integer|min:1'
+                'quantity' => 'required|integer|min:1',
+                'currency' => 'string|size:3'
             ]);
             
             $cart = $this->getOrCreateCart();
+
+            // Si el carrito está vacío, actualizar la moneda
+            if ($cart->items->isEmpty() && $request->has('currency')) {
+                $cart->currency = $request->currency;
+                $cart->save();
+            }
+
             $product = Product::findOrFail($request->product_id);
             $productPriceWithDiscount = $product->price - ($product->price * ($product->discount / 100));
             

@@ -32,6 +32,7 @@ class Cart extends Model
     // Método para actualizar el total
     public function updateTotal()
     {
+        $this->load('items');
         $this->total_amount = $this->items->sum('total_price');
         $this->save();
         

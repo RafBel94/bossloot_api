@@ -18,6 +18,7 @@ Route::post('users/update-profile/{id}', [UserController::class, 'updateProfile'
 Route::resource('users', UserController::class)->except(['store'])->middleware(['auth:sanctum', 'role:admin']);
 Route::post('register', [UserController::class, 'store']);
 Route::post('login', [UserController::class, 'login']);
+Route::post('loginUser', [UserController::class, 'loginUser']);
 
 // Verification routes
 Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verifyEmail'])->name('verification.verify');

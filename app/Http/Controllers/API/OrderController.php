@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use Log;
 
 class OrderController extends BaseController
@@ -43,18 +44,22 @@ class OrderController extends BaseController
     }
     
     // Method to create an order from the cart
-    public function checkout()
+    public function checkout(Request $request)
 {
     try {
         DB::beginTransaction();
 
-        // Usar first() en lugar de firstOrFail()
         $cart = Cart::where('user_id', Auth::id())
             ->where('status', 'active')
             ->with('items.product')
             ->first();
+
+        // Si el cliente ha enviado una moneda, actualizarla
+        if ($request->has('currency')) {
+            $cart->currency = $request->currency;
+            $cart->save();
+        }
         
-        // Verificar manualmente si existe el carrito
         if (!$cart) {
             DB::rollBack();
             return $this->sendError('Cart not found', ['No active cart found for this user'], 404);
@@ -65,7 +70,6 @@ class OrderController extends BaseController
             return $this->sendError('Cart is empty', ['The cart is empty'], 400);
         }
         
-        // Crear la orden una sola vez
         $order = Order::createFromCart($cart);
         $order->status = 'pending_payment';
         $order->save();

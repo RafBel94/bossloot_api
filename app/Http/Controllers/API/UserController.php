@@ -87,6 +87,51 @@ class UserController extends BaseController
                 return $this->sendError('Unauthorized.', ['error' => 'User not activated. Please contact an admin.']);
             } else if ($user->email_confirmed == 0) {
                 return $this->sendError('Unauthorized.', ['error' => 'Please confirm your email before logging in.']);
+            } else if ($user->role == 'user') {
+                return $this->sendError('Unauthorized.', ['error' => 'Only administrators can log in.']);
+            }
+
+            $data['id'] = $user->id;
+            $data['name'] = $user->name;
+            $data['email'] = $user->email;
+            $data['role'] = $user->role;
+            $data['address_1'] = $user->adress_1;
+            $data['address_2'] = $user->adress_2;
+            $data['mobile_phone'] = $user->mobile_phone;
+            $data['level'] = $user->level;
+            $data['points'] = $user->points;
+            $data['email_confirmed'] = $user->email_confirmed;
+            $data['activated'] = $user->activated;
+            $data['profile_picture'] = $user->profile_picture;
+            $data['token'] = $token;
+
+            return $this->sendResponse($data, 'User login successfully.');
+
+        } else {
+            return $this->sendError('Unauthorized.', ['error' => 'Invalid credentials.']);
+        }
+    }
+
+    public function loginUser(Request $request)
+    {
+        $credentials = $request->all();
+        $validator = Validator::make($credentials, [
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+
+        if (auth()->attempt($credentials)) {
+            $user = auth()->user();
+            $token = $user->createToken('BossLoot')->plainTextToken;
+
+            if ($user->activated == 0) {
+                return $this->sendError('Unauthorized.', ['error' => 'User not activated. Please contact an admin.']);
+            } else if ($user->email_confirmed == 0) {
+                return $this->sendError('Unauthorized.', ['error' => 'Please confirm your email before logging in.']);
             } else if ($user->role == 'admin') {
                 return $this->sendError('Unauthorized.', ['error' => 'You cannot login as an admin.']);
             }
