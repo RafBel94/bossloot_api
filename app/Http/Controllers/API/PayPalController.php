@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Mail;
+use App\Mail\OrderConfirmationMail;
 
 class PayPalController extends BaseController
 {
@@ -101,12 +103,11 @@ class PayPalController extends BaseController
             // Obtain the access token
             $accessToken = $this->getAccessToken();
             
-            // CAMBIO AQUÍ: Usar withBody('', 'application/json') para enviar un cuerpo vacío explícitamente
             $response = Http::withHeaders([
                     'Content-Type' => 'application/json',
                     'Authorization' => "Bearer {$accessToken}"
                 ])
-                ->withBody('', 'application/json') // Cuerpo vacío explícito
+                ->withBody('', 'application/json')
                 ->post("{$this->baseUrl}/v2/checkout/orders/{$orderId}/capture");
             
             // Log the response for debugging
@@ -127,10 +128,12 @@ class PayPalController extends BaseController
                 throw new \Exception('Unauthorized access to order');
             }
             
+            // If the payment was successful, update the order status
             if (isset($captureData['status']) && $captureData['status'] === 'COMPLETED') {
                 $order->status = 'paid';
                 $order->save();
 
+                // Also update the cart status if needed
                 if ($order->cart_id) {
                     $cart = Cart::find($order->cart_id);
                     if ($cart) {
@@ -138,6 +141,25 @@ class PayPalController extends BaseController
                         $cart->save();
                     }
                 }
+
+                $order->load('items.order', 'user');
+
+                foreach ($order->items as $item) {
+                    $item->order = $order;
+}
+
+                $emailData = [
+                    'name' => $order->user->name,
+                    'email' => $order->user->email,
+                    'subject' => 'Confirmación de Pedido #' . $order->id,
+                    'message' => '¡Gracias por tu compra! Tu pedido ha sido procesado y confirmado. A continuación encontrarás los detalles de tu compra.',
+                    'items' => $order->items,
+                    'total_amount' => $order->total_amount,
+                    'currency' => $order->currency,
+                ];
+
+                // Send confirmation email
+                Mail::to($order->user->email)->send(new OrderConfirmationMail($emailData));
 
                 DB::commit();
                 

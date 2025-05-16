@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Http\Services\CurrencyExchangeService;
 
 class Order extends Model
 {
@@ -32,6 +33,44 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
     
+    /**
+     * Gets the total converted according to the currency using the conversion service
+     * 
+     * @param string|null $targetCurrency The target currency (if null, uses the order currency)
+     * @return float
+     */
+    public function getConvertedTotal($targetCurrency = null)
+    {
+        // If no target currency is provided, use the order's currency
+        $targetCurrency = $targetCurrency ?: $this->currency;
+        
+        // If the source and target currencies are the same, no conversion is needed
+        if ($this->currency === $targetCurrency) {
+            return $this->total_amount;
+        }
+        
+        $exchangeService = app(CurrencyExchangeService::class);
+        $convertedAmount = $exchangeService->convert($this->total_amount, 'EUR', $targetCurrency);
+        
+        return $convertedAmount ?? $this->total_amount;
+    }
+    
+    /**
+     * Gets the conversion rate for the order's currency
+     * 
+     * @param string $baseCurrency
+     * @return float|null
+     */
+    public function getConversionRate($baseCurrency = 'EUR')
+    {
+        if ($this->currency === $baseCurrency) {
+            return 1.0;
+        }
+        
+        $exchangeService = app(CurrencyExchangeService::class);
+        return $exchangeService->getRate($baseCurrency, $this->currency);
+    }
+    
     // Method for creating an order from a cart
     public static function createFromCart(Cart $cart)
     {
@@ -54,11 +93,6 @@ class Order extends Model
             $orderItem->total_price = $cartItem->total_price;
             $orderItem->save();
         }
-        
-        // Mark the cart as processed
-        // NOW THIS IS HANDLED IN THE capturePayment() method of PayPalController
-        // $cart->status = 'processed';
-        // $cart->save();
         
         return $order;
     }
