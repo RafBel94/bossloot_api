@@ -208,10 +208,8 @@ class PayPalController extends BaseController
                 'currency' => $order->currency,
             ];
 
-            $imageUrl = 'https://res.cloudinary.com/dlmbw4who/image/upload/v1742656623/bossloot-logo-full_ts0enf.png';
-
             // Send confirmation email
-            Mail::to($order->user->email)->send(new OrderConfirmationMail($emailData, $imageUrl));
+            Mail::to($order->user->email)->send(new OrderConfirmationMail($emailData));
         } catch (\Exception $e) {
             Log::error('Error sending confirmation email: ' . $e->getMessage());
         }

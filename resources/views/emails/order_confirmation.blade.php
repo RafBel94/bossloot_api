@@ -236,15 +236,6 @@
                         </div>
                     </div>
                 </div>
-                
-                @if($imageUrl)
-                <div class="message-field">
-                    <span class="field-label">Imagen Adjunta:</span>
-                    <div class="image-container">
-                        <img src="{{ $imageUrl }}" height="300" width="500" alt="Imagen adjunta" class="attached-image">
-                    </div>
-                </div>
-                @endif
             </div>
         </div>
         

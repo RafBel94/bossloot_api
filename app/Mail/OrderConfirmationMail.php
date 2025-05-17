@@ -21,10 +21,9 @@ class OrderConfirmationMail extends Mailable
      * @param string|null $imageUrl
      * @return void
      */
-    public function __construct(array $emailData, $imageUrl = null)
+    public function __construct(array $emailData)
     {
         $this->emailData = $emailData;
-        $this->imageUrl = $imageUrl;
     }
 
     /**
@@ -115,7 +114,6 @@ class OrderConfirmationMail extends Mailable
                 'convertedTotal' => $convertedTotal,
                 'convertedPrices' => $convertedPrices,
                 'currency' => $currency,
-                'imageUrl' => $this->imageUrl,
             ]);
 
         return $mail;
