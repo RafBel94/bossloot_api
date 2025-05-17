@@ -97,4 +97,21 @@ class User extends Authenticatable
     {
         return $this->hasMany(Favorite::class);
     }
+
+    // Get discount the user has depending on the level
+    public function getDiscount()
+    {
+        switch ($this->level) {
+            case 1:
+                return 0;
+            case 2:
+                return 0.05;
+            case 3:
+                return 0.10;
+            case 4:
+                return 0.15;
+            default:
+                return 0;
+        }
+    }
 }

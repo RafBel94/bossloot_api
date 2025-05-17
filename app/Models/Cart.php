@@ -29,11 +29,13 @@ class Cart extends Model
         return $this->hasMany(Order::class);
     }
     
-    // Método para actualizar el total
+    // Method for updating the total amount of the cart
     public function updateTotal()
     {
         $this->load('items');
-        $this->total_amount = $this->items->sum('total_price');
+        $this->load('user');
+        $discount = $this->user->getDiscount();
+        $this->total_amount = $this->items->sum('total_price') - ($this->items->sum('total_price') * $discount);
         $this->save();
         
         return $this;
