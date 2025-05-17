@@ -114,4 +114,21 @@ class User extends Authenticatable
                 return 0;
         }
     }
+
+    // Check if the user has enough points to level up and tries to do so
+    public function TryLevelUp()
+    {
+        $points = $this->points;
+
+        if ($points >= 800) {
+            $this->level = 4;
+        } else if ($points >= 500) {
+            $this->level = 3;
+        } else if ($points >= 300) {
+            $this->level = 2;
+        } else {
+            return false;
+        }
+    }
+
 }

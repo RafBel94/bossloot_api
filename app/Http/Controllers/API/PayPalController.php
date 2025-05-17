@@ -141,25 +141,24 @@ class PayPalController extends BaseController
                         $cart->save();
                     }
                 }
-
+                
+                // Load the order items and user for the confirmation email, point assignment and assigning the order to each item
                 $order->load('items.order', 'user');
 
-                foreach ($order->items as $item) {
-                    $item->order = $order;
-}
+                // // Assign the order to each item (*)
+                // foreach ($order->items as $item) {
+                //     $item->order = $order;
+                // }    
+                
+                // // Assign the order_id to the item (*)
+                // $item->order_id = $order->id;
+                // $item->save();
 
-                $emailData = [
-                    'name' => $order->user->name,
-                    'email' => $order->user->email,
-                    'subject' => 'Confirmación de Pedido #' . $order->id,
-                    'message' => '¡Gracias por tu compra! Tu pedido ha sido procesado y confirmado. A continuación encontrarás los detalles de tu compra.',
-                    'items' => $order->items,
-                    'total_amount' => $order->total_amount,
-                    'currency' => $order->currency,
-                ];
+                // Assign points to the user
+                $this->assignPoints($order);
 
                 // Send confirmation email
-                Mail::to($order->user->email)->send(new OrderConfirmationMail($emailData));
+                $this->sendConfirmationEmail($order);
 
                 DB::commit();
                 
@@ -176,6 +175,45 @@ class PayPalController extends BaseController
             DB::rollBack();
             Log::error('Error capturing PayPal payment: ' . $e->getMessage());
             return $this->sendError('Error capturing PayPal payment', ['Failed to capture payment: ' . $e->getMessage()], 500);
+        }
+    }
+
+    // Method to assign points to the user
+    private function assignPoints($order)
+    {
+        try {
+            // Assign points to the user based on the order total
+            $user = $order->user;
+            $points = $order->total_amount * 0.25;
+            $user->points += $points;
+            $user->TryLevelUp();
+            $user->save();
+        } catch (\Exception $e) {
+            Log::error('Error assigning points to user: ' . $e->getMessage());
+        }
+    }
+
+    // Method to send confirmation email
+    private function sendConfirmationEmail($order)
+    {
+        try {
+            // Prepare the email data
+            $emailData = [
+                'name' => $order->user->name,
+                'email' => $order->user->email,
+                'subject' => 'Confirmación de Pedido #' . $order->id,
+                'message' => '¡Gracias por tu compra! Tu pedido ha sido procesado y confirmado. A continuación encontrarás los detalles de tu compra.',
+                'items' => $order->items,
+                'total_amount' => $order->total_amount,
+                'currency' => $order->currency,
+            ];
+
+            $imageUrl = 'https://res.cloudinary.com/dlmbw4who/image/upload/v1742656623/bossloot-logo-full_ts0enf.png';
+
+            // Send confirmation email
+            Mail::to($order->user->email)->send(new OrderConfirmationMail($emailData, $imageUrl));
+        } catch (\Exception $e) {
+            Log::error('Error sending confirmation email: ' . $e->getMessage());
         }
     }
     

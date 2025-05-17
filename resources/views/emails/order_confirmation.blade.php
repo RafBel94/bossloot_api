@@ -241,14 +241,10 @@
                 <div class="message-field">
                     <span class="field-label">Imagen Adjunta:</span>
                     <div class="image-container">
-                        <img src="{{ $imageUrl }}" alt="Imagen adjunta" class="attached-image">
+                        <img src="{{ $imageUrl }}" height="300" width="500" alt="Imagen adjunta" class="attached-image">
                     </div>
                 </div>
                 @endif
-            </div>
-            
-            <div class="action-container">
-                <a href="{{ url('/mi-cuenta/pedidos') }}" class="action-button">Ver mis pedidos</a>
             </div>
         </div>
         
