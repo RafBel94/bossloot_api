@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('comment', 255)->nullable();
             $table->integer('likes')->default(0);
             $table->integer('dislikes')->default(0);
+            $table->boolean('verified')->default(false);
             $table->string('image')->nullable();
             $table->timestamps();
         });

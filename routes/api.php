@@ -46,6 +46,7 @@ Route::put('brands/{id}', [BrandController::class, 'update'])->middleware(['auth
 Route::delete('brands/{id}', [BrandController::class, 'destroy'])->middleware(['auth:sanctum', 'role:admin']);
 
 // Valoration routes
+Route::post('valorations/verify/{id}', [ValorationController::class, 'verify'])->middleware(['auth:sanctum']);
 Route::resource('valorations', ValorationController::class)->only(['index', 'show']);
 Route::post('valorations', [ValorationController::class, 'store'])->middleware(['auth:sanctum']);
 Route::put('valorations/{id}', [ValorationController::class, 'update'])->middleware(['auth:sanctum']);

@@ -21,6 +21,7 @@ class ValorationResource extends JsonResource
             'rating' => $this->rating,
             'comment' => $this->comment,
             'image' => $this->image,
+            'verified' => $this->verified,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'user' => $this->whenLoaded('user', function () {

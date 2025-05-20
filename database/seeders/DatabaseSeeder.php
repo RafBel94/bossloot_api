@@ -78,6 +78,16 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now()
         ]);
 
+        User::factory()->create([
+            'name' => 'Rafael',
+            'email' => 'rafael.beltrancaceres@gmail.com',
+            'password' => 'Rafael123.',
+            'role' => 'user',
+            'email_confirmed' => true,
+            'activated' => true,
+            'email_verified_at' => now()
+        ]);
+
     }
 
     /**
@@ -1025,7 +1035,8 @@ class DatabaseSeeder extends Seeder
                 'product_id' => $products->random()->id,
                 'rating' => rand(1, 5),
                 'comment' => fake()->optional()->sentence(20),
-                'image' => rand(0, 1) ? 'https://res.cloudinary.com/dlmbw4who/image/upload/v1743097241/product-placeholder_jcgqx4.png' : null,
+                'verified' => 1,
+                'image' => rand(0, 1) ? 'https://res.cloudinary.com/dlmbw4who/image/upload/v1745606882/valoration-placeholder_llhcse.png' : null,
             ]);
         }
     }

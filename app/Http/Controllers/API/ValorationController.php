@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Requests\ValorationRequest;
 use App\Models\Valoration;
+use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
@@ -50,11 +51,14 @@ class ValorationController extends BaseController
                 )->getSecurePath();
             }
 
+            $userId = Auth::id();
+
             $valoration = Valoration::create([
-                'user_id' => $request->user_id,
+                'user_id' => $userId,
                 'product_id' => $request->product_id,
                 'rating' => $request->rating,
                 'comment' => $request->comment,
+                'verified' => 0,
                 'image' => $imageUrl,
             ]);
 
@@ -73,7 +77,7 @@ class ValorationController extends BaseController
      */
     public function show(string $id)
     {
-        $valoration = Valoration::find($id);
+        $valoration = Valoration::with(['user', 'product'])->find($id);
 
         if (!$valoration) {
             return $this->sendError('Valoration not found.');
@@ -88,6 +92,32 @@ class ValorationController extends BaseController
     public function edit(Valoration $valoration)
     {
         //
+    }
+
+    /**
+     * Verify the valoration
+     */
+    public function verify(String $id) {
+        DB::beginTransaction();
+
+        try {
+            $valoration = Valoration::find($id);
+
+            if (!$valoration) {
+                return $this->sendError('Valoration not found.');
+            }
+
+            $valoration->verified = 1;
+            $valoration->save();
+
+            DB::commit();
+
+            return $this->sendResponse($valoration, 'Valoration verified successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            logger()->error('Error verifying valoration: ' . $e->getMessage());
+            return $this->sendError('Error verifying valoration: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -168,8 +198,28 @@ class ValorationController extends BaseController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Valoration $valoration)
+    public function destroy(String $id)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            $valoration = Valoration::find($id);
+
+            if (!$valoration) {
+                return $this->sendError('Valoration not found.');
+            }
+
+            $this->deleteOldProductPicture($valoration->image);
+
+            $valoration->delete();
+
+            DB::commit();
+
+            return $this->sendResponse([], 'Valoration deleted successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            logger()->error('Error deleting valoration: ' . $e->getMessage());
+            return $this->sendError('Error deleting valoration: ' . $e->getMessage());
+        }
     }
 }

@@ -14,7 +14,8 @@ class Valoration extends Model
         'product_id',
         'rating',
         'comment',
-        'image'
+        'image',
+        'verified'
     ];
 
     public function user()
