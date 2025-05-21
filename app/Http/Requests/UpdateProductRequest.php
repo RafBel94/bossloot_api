@@ -34,7 +34,7 @@ class UpdateProductRequest extends FormRequest
     {
         $commonRules = [
             'name' => 'required|max:60|unique:products,name,' . $this->id,
-            'description' => 'required|max:255',
+            'description' => 'required',
             'category_id' => 'required|integer',
             'brand_id' => 'required|integer',
             'model' => 'required|max:60',
