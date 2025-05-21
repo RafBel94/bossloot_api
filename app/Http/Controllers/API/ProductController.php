@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Brand;
+use Illuminate\Http\Request;
 
 class ProductController extends BaseController
 {
@@ -50,6 +52,71 @@ class ProductController extends BaseController
         $products = Product::with(['category', 'brand'])->get();
 
         return $this->sendResponse(SimpleProductResource::collection($products), 'Products retrieved successfully.');
+    }
+
+    /**
+     * Obtener productos filtrados
+     *
+     */
+    public function filter(Request $request)
+    {
+        // Start the base query
+        $query = Product::with(['category', 'brand']);
+
+        // Filter by categories
+        if ($request->has('categories')) {
+            $categories = json_decode($request->categories);
+                if (!empty($categories)) {
+                // Get the IDs of the categories by their names
+                $categoryIds = Category::whereIn('name', $categories)->pluck('id');
+                $query->whereIn('category_id', $categoryIds);
+            }
+        }
+
+        // Filter by brands
+        if ($request->has('brands')) {
+            $brands = json_decode($request->brands);
+                if (!empty($brands)) {
+                // Get the IDs of the brands by their names
+                $brandIds = Brand::whereIn('name', $brands)->pluck('id');
+                $query->whereIn('brand_id', $brandIds);
+            }
+        }
+
+        // Filter by minimum price
+        if ($request->has('min_price') && is_numeric($request->min_price)) {
+            $query->where('price', '>=', $request->min_price);
+        }
+
+        // Filter by maximum price
+        if ($request->has('max_price') && is_numeric($request->max_price)) {
+            $query->where('price', '<=', $request->max_price);
+        }
+
+        // Filter by featured products
+        if ($request->has('featured') && $request->featured) {
+            $query->where('featured', 1);
+        }
+
+        // Order by price
+        if ($request->has('price_order')) {
+            if ($request->price_order === 'asc') {
+                $query->orderBy('price', 'asc');
+            } elseif ($request->price_order === 'desc') {
+                $query->orderBy('price', 'desc');
+            }
+        }
+
+        // Filter by products on offer
+        if ($request->has('on_offer') && $request->on_offer) {
+            $query->where('on_offer', 1);
+        }
+
+        // Execute the query and get the results
+        $products = $query->get();
+
+        // Return the resource collection
+        return $this->sendResponse(SimpleProductResource::collection($products), 'Filtered products retrieved successfully.');
     }
 
     /**

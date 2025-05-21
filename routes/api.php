@@ -26,6 +26,7 @@ Route::post('/check-verification', [VerificationController::class, 'checkEmailVe
 Route::post('/resend-verification', [VerificationController::class, 'resendEmailVerification'])->name('verification.resend');
 
 // Product routes
+Route::get('/products/filter', [ProductController::class, 'filter']);
 Route::get('products/featured', [ProductController::class, 'showFeatured'])->name('products.latest');
 Route::get('products/detailed/{id}', [ProductController::class, 'showDetailed'])->name('products.detailed');
 Route::resource('products', ProductController::class)->only(['index', 'show']);
