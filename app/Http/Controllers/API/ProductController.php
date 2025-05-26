@@ -14,6 +14,7 @@ use App\Models\Brand;
 use Illuminate\Http\Request;
 use App\Models\CartItem;
 use App\Models\Favorite;
+use App\Models\Cart;
 
 class ProductController extends BaseController
 {
@@ -388,9 +389,22 @@ class ProductController extends BaseController
             return $this->sendError('Product not found.');
             }
 
+           // Obtain the IDs of carts that contain the product
+            $affectedCartIds = CartItem::where('product_id', $product->id)
+                ->pluck('cart_id')
+                ->unique();
+
             // Delete cart items associated with the product
             CartItem::where('product_id', $product->id)->delete();
             Favorite::where('product_id', $product->id)->delete();
+
+            // Update the total amount of each affected cart
+            foreach ($affectedCartIds as $cartId) {
+                $cart = Cart::find($cartId);
+                if ($cart) {
+                    $cart->updateTotal();
+                }
+            }
 
             $product->deleted = true;
             $product->save();
