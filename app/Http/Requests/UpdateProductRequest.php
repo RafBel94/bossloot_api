@@ -44,7 +44,6 @@ class UpdateProductRequest extends FormRequest
             'discount' => 'numeric|min:0|max:100',
             'featured' => 'required|boolean',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'points' => 'nullable|integer|min:0|max:2000',
         ];
 
         $categorySpecificRules = [

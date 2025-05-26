@@ -19,7 +19,6 @@ class Product extends Model
         'discount',
         'featured',
         'image',
-        'points',
         'deleted'
     ];
 

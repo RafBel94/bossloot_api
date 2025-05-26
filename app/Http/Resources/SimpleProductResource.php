@@ -25,7 +25,6 @@ class SimpleProductResource extends JsonResource
             'discount' => $this->discount,
             'featured' => $this->featured,
             'image' => $this->image,
-            'points' => $this->points,
             'deleted' => $this->deleted,
             'category' => $this->whenLoaded('category', fn() => $this->category->name),
             'brand' => $this->whenLoaded('brand', fn() => $this->brand->name),
