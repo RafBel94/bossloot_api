@@ -20,6 +20,7 @@ class Product extends Model
         'featured',
         'image',
         'points',
+        'deleted'
     ];
 
     public function specs()

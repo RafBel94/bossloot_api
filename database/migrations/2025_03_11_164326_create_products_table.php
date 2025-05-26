@@ -24,6 +24,7 @@ return new class extends Migration {
             $table->integer('quantity');
             $table->integer('points')->default(0);
             $table->string('image')->default('https://res.cloudinary.com/dlmbw4who/image/upload/v1743097241/product-placeholder_jcgqx4.png');
+            $table->boolean('deleted')->default(false);
             $table->timestamps();
         });
     }

@@ -12,6 +12,8 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
 use Illuminate\Http\Request;
+use App\Models\CartItem;
+use App\Models\Favorite;
 
 class ProductController extends BaseController
 {
@@ -376,13 +378,30 @@ class ProductController extends BaseController
      */
     public function destroy(string $id)
     {
-        $product = Product::find($id);
+        try {
 
-        if ($product == null) {
+            DB::beginTransaction();
+
+            $product = Product::find($id);
+
+            if ($product == null) {
             return $this->sendError('Product not found.');
-        }
+            }
 
-        $product->delete();
-        return $this->sendResponse([], 'Product deleted successfully.');
+            // Delete cart items associated with the product
+            CartItem::where('product_id', $product->id)->delete();
+            Favorite::where('product_id', $product->id)->delete();
+
+            $product->deleted = true;
+            $product->save();
+
+            DB::commit();
+
+            return $this->sendResponse([], 'Product deleted successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Error deleting product: ' . $e->getMessage());
+            return $this->sendError('Failed to delete product.', ['error' => $e->getMessage()]);
+        }
     }
 }
