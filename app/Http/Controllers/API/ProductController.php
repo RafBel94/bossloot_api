@@ -418,4 +418,21 @@ class ProductController extends BaseController
             return $this->sendError('Failed to delete product.', ['error' => $e->getMessage()]);
         }
     }
+
+    /**
+     * Restore product from soft delete.
+     */
+    public function restore(string $id)
+    {
+        $product = Product::find($id);
+
+        if ($product == null) {
+            return $this->sendError('Product not found.');
+        }
+
+        $product->deleted = false;
+        $product->save();
+
+        return $this->sendResponse(new ProductResource($product), 'Product restored successfully.');
+    }
 }
