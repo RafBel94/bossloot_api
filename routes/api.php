@@ -14,6 +14,7 @@ use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\PayPalController;
 
 // User routes
+Route::post('users/restore/{id}', [UserController::class, 'restore'])->middleware(['auth:sanctum', 'role:admin']);
 Route::post('users/update-profile/{id}', [UserController::class, 'updateProfile'])->middleware(['auth:sanctum']);
 Route::resource('users', UserController::class)->except(['store'])->middleware(['auth:sanctum']);
 Route::post('register', [UserController::class, 'store']);

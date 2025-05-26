@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('profile_picture')->default('https://res.cloudinary.com/dlmbw4who/image/upload/v1742850142/avatar-placeholder_qiq5pb.png');
             $table->boolean('activated')->default(true);
             $table->boolean('email_confirmed')->default(false);
+            $table->boolean('deleted')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

@@ -33,7 +33,8 @@ class User extends Authenticatable
         'points',
         'profile_picture',
         'activated',
-        'email_confirmed'
+        'email_confirmed',
+        'deleted'
     ];
 
     /**

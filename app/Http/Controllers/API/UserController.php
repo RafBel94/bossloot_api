@@ -89,6 +89,8 @@ class UserController extends BaseController
                 return $this->sendError('Unauthorized.', ['error' => 'Please confirm your email before logging in.']);
             } else if ($user->role == 'user') {
                 return $this->sendError('Unauthorized.', ['error' => 'Only administrators can log in.']);
+            } else if ($user->deleted) {
+                return $this->sendError('Unauthorized.', ['error' => 'User account is deleted. Please contact an admin.']);
             }
 
             $data['id'] = $user->id;
@@ -304,8 +306,30 @@ class UserController extends BaseController
             return $this->sendError('Unauthorized.', ['error' => 'You cannot delete this user.']);
         }
 
-        $user->delete();
+        $user->deleted = true;
+        $user->save();
 
         return $this->sendResponse([], 'User deleted successfully.');
+    }
+
+    /**
+     * Restore a soft-deleted user.
+     */
+    public function restore(string $id)
+    {
+        $user = User::find($id);
+
+        if ($user == null) {
+            return $this->sendError('User not found.');
+        }
+
+        if ($user->role == 'admin') {
+            return $this->sendError('Unauthorized.', ['error' => 'You cannot restore this user.']);
+        }
+
+        $user->deleted = false;
+        $user->save();
+
+        return $this->sendResponse(new UserResource($user), 'User restored successfully.');
     }
 }

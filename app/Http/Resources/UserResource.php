@@ -27,6 +27,7 @@ class UserResource extends JsonResource
             'email_confirmed' => $this->email_confirmed,
             'activated' => $this->activated,
             'profile_picture' => $this->profile_picture,
+            'deleted' => $this->deleted,
         ];
     }
 }
