@@ -89,8 +89,6 @@ class UserController extends BaseController
                 return $this->sendError('Unauthorized.', ['error' => 'Please confirm your email before logging in.']);
             } else if ($user->role == 'user') {
                 return $this->sendError('Unauthorized.', ['error' => 'Only administrators can log in.']);
-            } else if ($user->deleted) {
-                return $this->sendError('Unauthorized.', ['error' => 'User account is deleted. Please contact an admin.']);
             }
 
             $data['id'] = $user->id;
@@ -136,6 +134,8 @@ class UserController extends BaseController
                 return $this->sendError('Unauthorized.', ['error' => 'Please confirm your email before logging in.']);
             } else if ($user->role == 'admin') {
                 return $this->sendError('Unauthorized.', ['error' => 'You cannot login as an admin.']);
+            } else if ($user->deleted == 1) {
+                return $this->sendError('Unauthorized.', ['error' => 'User account is deleted. Please contact an admin.']);
             }
 
             $data['id'] = $user->id;
